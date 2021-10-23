@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'course.apps.CourseConfig',
     'instructor.apps.InstructorConfig',
+    'crispy_forms',
+
 ]
 
 MIDDLEWARE = [
@@ -126,3 +128,4 @@ MEDIA_URL = '/media/'
 
 LOGIN_URL='/login'
 DEFAULT_AUTO_FIELD='django.db.models.AutoField' 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

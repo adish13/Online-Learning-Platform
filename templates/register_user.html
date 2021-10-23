@@ -38,7 +38,7 @@ $('.message a').click(function(){
 </head>
 {% block body %}
 
-
+<!-- 
 
 <!--<div class="login-page">-->
   <!--<div class="form">-->
@@ -57,7 +57,7 @@ $('.message a').click(function(){
       <!--<p class="message">Not registered? <a href="{% url 'register_user' %}">Register Now!</a></p>-->
     <!--</form>-->
   <!--</div>-->
-<!--</div>-->
+<!-- </div>
 <div class="container">
     <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
     <div class="container-fluid">
@@ -89,11 +89,11 @@ $('.message a').click(function(){
           <li><a class="navbar-brand" href='/login'>Login</a></li>
           <li><a class="navbar-brand" href='/register'>Register</a></li>
         </ul>
-        {% endif %}
+        {% endif %} -->
       </div><!--/.nav-collapse -->
     </div><!--/.container-fluid -->
-  </nav>
-</div>
+  <!-- </nav>
+</div> --> -->
 <br><br><br><br><br><br>
 <div class="col-sm-offset-3 col-sm-8 col-md-5" style="background-color:white">
 {% if error_message %}
@@ -128,6 +128,7 @@ $('.message a').click(function(){
                 <button type="submit" class="btn btn-success">Submit</button>
             </div>
         </div>
+        <center> <p class="message">Already registered? <a href="{% url 'login_user' %}"> Login! </a></p> </center>
     </form>
 </div>
 {% endblock %}
