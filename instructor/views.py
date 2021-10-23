@@ -1,16 +1,17 @@
 ## @brief Views for the instructor app.
-
+import os
+from wsgiref.util import FileWrapper
 from django.contrib.auth.decorators import login_required
 from .models import Instructor, Submission, Assignment
 from course.models import Course, Message, Notification, Student
 from django.shortcuts import render, HttpResponse, redirect
-from .forms import AssignmentForm, NotificationForm, ResourceForm
+from .forms import AssignmentForm, NotificationForm, ResourceForm, FeedbackForm
 from course.forms import MessageForm
 import datetime
+import mimetypes
+from float_moodle import settings
 
-
-## @brief view for the index page of the instructor.
-#
+# view for the index page of the instructor.
 # This view is called by /instructor_index url.\n
 # It returns the instructor's homepage containing links to all the courses he teaches.
 @login_required
@@ -26,8 +27,7 @@ def instructor_index(request):
     return render(request, 'instructor/instructor_index.html', context)
 
 
-## @brief view for the detail page of the course.
-#
+# view for the detail page of the course.
 # This view is called by <course_id>/instructor_detail url.\n
 # It returns the course's detail page containing forum and links to add assignment,resource,notifications
 # and view all the assignments and their submissions.
@@ -69,8 +69,7 @@ def instructor_detail(request, course_id):
         return render(request, 'instructor/instructor_detail.html', context)
 
 
-## @brief view for the course's add-notification page
-#
+# view for the course's add-notification page
 # This view is called by <course_id>/add_notification url.\n
 # It returns the webpage containing a form to add notification and redirects to the course's detail page again after the form is submitted.
 @login_required
@@ -87,8 +86,7 @@ def add_notification(request, course_id):
     return render(request, 'instructor/add_notification.html', {'course': course, 'form': form})
 
 
-## @brief view for the course's add-assignment page.
-#
+# view for the course's add-assignment page.
 # This view is called by <course_id>/add_assignment url.\n
 # It returns the webpage containing a form to add an assignment and redirects to the course's detail page again after the form is submitted.
 @login_required
@@ -135,8 +133,7 @@ def add_resource(request, course_id):
     return render(request, 'instructor/add_resource.html', {'form': form, 'course': course})
 
 
-## @brief view for the assignments page of a course.
-#
+# view for the assignments page of a course.
 # This view is called by <course_id>/view_all_assignments url.\n
 # It returns the webpage containing all the assignments of the course and links to their submissions and feedbacks given by the students.
 @login_required
@@ -146,8 +143,7 @@ def view_all_assignments(request, course_id):
     return render(request, 'instructor/view_all_assignments.html', {'assignments' : assignments,'course': course})
 
 
-## @brief view for the submissions page of an assignment.
-#
+# view for the submissions page of an assignment.
 # This view is called by <assignment_id>/view_all_submissions url.\n
 # It returns the webpage containing links to all the submissions of an assignment.
 @login_required
@@ -157,42 +153,35 @@ def view_all_submissions(request,assignment_id):
     course = assignment.course
     return render(request, 'instructor/view_all_submissions.html', {'submissions' : submissions,'course': course})
 
+# @login_required
+# def download(request,file_name):
+#     file_path = settings.MEDIA_ROOT +'/'+ file_name
+#     file_wrapper = FileWrapper(file(file_path,'rb'))
+#     file_mimetype = mimetypes.guess_type(file_path)
+#     response = HttpResponse(file_wrapper, content_type=file_mimetype )
+#     response['X-Sendfile'] = file_path
+#     response['Content-Length'] = os.stat(file_path).st_size
+#     response['Content-Disposition'] = 'attachment; filename=%s/' % smart_str(file_name) 
+#     return response
 
-## @brief view for the feedback page containing an histogram of all the feddbacks provided by the students.
-#
+
+# view for the feedback page containing an histogram of all the feddbacks provided by the students.
 # This view is called by <assignment_id>/view_feedback url.\n
 # It returns a webpage containing the feedback received by the students organized in the form of histogram.
-# @login_required
-# def view_feedback(request,assignment_id):
-    # import matplotlib.pyplot as plt
-    # import numpy as np
-    # from matplotlib.backends.backend_agg import FigureCanvasAgg
-    # import matplotlib.ticker as ticker
+@login_required
+def give_feedback(request, submission_id):
+    form = FeedbackForm(request.POST or None, request.FILES or None)
+    submission = Submission.objects.get(id=submission_id)
+    course = submission.assignment.course
+    if form.is_valid():
+        feedback = form.save(commit=False)
+        feedback.submission = submission
+        feedback.save()
+        # notification = Notification()
+        # notification.content = "Feedback added - " + submission.assignment.description
+        # notification.course = course
+        # notification.time = datetime.datetime.now().strftime('%H:%M, %d/%m/%y')
+        # notification.save()
+        return redirect('instructor:instructor_detail', course.id)
 
-    # assignment = Assignment.objects.get(id=assignment_id)
-    # submissions = Submission.objects.filter(assignment=assignment)
-
-    # feedbacks1 = list(map(lambda x: x.feedback, submissions)) #extract the feedbacks from the submissions list
-    # feedbacks = np.array(feedbacks1)
-
-    # fig = plt.figure(figsize=(10,6))
-    # fig.suptitle('Feedback received from the students', fontsize=16, fontweight='bold')
-    # fig.subplots_adjust(bottom=0.3)
-    # ax = fig.add_subplot(111)
-
-    # ax.set_xlabel('Rating(out of 10)')
-    # ax.set_ylabel('Number of Students')
-    # x = feedbacks
-    # ax.hist(x, bins=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], fc='lightblue', alpha=1, align='left', edgecolor='black', linewidth=1.0)
-    # ax.set_xticks([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
-    # ax.yaxis.set_major_locator(ticker.MultipleLocator(1)) #sets the difference between adjacent y-tics
-
-    # plt.figtext(0.2, 0.1, 'Average Rating : '+ str(round(np.mean(feedbacks),2)),
-    #             bbox={'facecolor': 'lightblue', 'alpha': 0.5, 'pad': 10})     #adds box in graph to display mean rating
-    # plt.figtext(0.5, 0.1, 'Number of Students Students who rated : ' + str(len(feedbacks1)),
-    #             bbox={'facecolor': 'lightblue', 'alpha': 0.5, 'pad': 10})     #adds box in graph to display number of students who rated
-
-    # canvas = FigureCanvasAgg(fig)
-    # response = HttpResponse(content_type='image/png')
-    # canvas.print_png(response)  # converts the figure to http response
-    # return response
+    return render(request, 'instructor/give_feedback.html', {'form': form,'course': course})

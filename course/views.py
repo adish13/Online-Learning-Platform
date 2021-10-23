@@ -1,10 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from .models import Student, Message, Notification, Resources
-from instructor.models import Assignment, Course, Instructor
+from instructor.models import Assignment, Course, Feedback, Instructor,Submission
 from django.shortcuts import render, redirect
 from .forms import MessageForm, SubmissionForm
 import datetime
-
+import mimetypes
 
 ## @brief view for the index page of the student.
 #
@@ -12,9 +12,9 @@ import datetime
 # It returns the student's homepage containing links to all the courses he is enrolled in and all the notifications.
 @login_required
 def index(request):
-    student = Student.objects.get(user=request.user)
+    student = Student.objects.get(user = request.user)
     courses = student.course_list.all()
-    notifications = Notification.objects.filter(course__in=courses)
+    notifications = Notification.objects.filter(course__in = courses)
     return render(request, 'course/index.html', {'courses': courses, 'notifications': notifications})
 
 
@@ -107,5 +107,22 @@ def upload_submission(request, assignment_id):
         return view_assignments(request, course_id)
 
     return render(request, 'course/upload_submission.html', {'form': form,'course': course})
+
+@login_required
+def view_submissions(request,assignment_id):
+    assignment = Assignment.objects.get(id=assignment_id)
+    submissions = Submission.objects.filter(user=request.user)
+    course = assignment.course
+    return render(request, 'course/view_submissions.html', {'submissions' : submissions,'course': course})
+
+@login_required
+def view_feedback(request,submission_id):
+    feedback = Feedback.objects.filter(submission=submission_id)[0]
+    submission = Submission.objects.get(id=submission_id)
+    course = submission.assignment.course
+    print(feedback)
+    # content = feedback.content
+    # marks = feedback.marks
+    return render(request, 'course/view_feedback.html', {'feedback': feedback,'course': course})
 
 

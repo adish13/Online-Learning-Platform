@@ -1,6 +1,5 @@
 from django import forms
-
-from .models import Assignment
+from .models import Assignment,Submission,Feedback
 from course.models import Notification, Resources
 
 # This class represents the form to add a notification.
@@ -23,3 +22,8 @@ class ResourceForm(forms.ModelForm):
     class Meta:
         model = Resources
         fields = ['title', 'file_resource']
+
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ['content','marks']

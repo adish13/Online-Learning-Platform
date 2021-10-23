@@ -10,6 +10,9 @@ urlpatterns = [
     url(r'^(?P<course_id>[0-9]+)/detail/$', views.detail, name='detail'),
     url(r'^index/$', views.index, name='index'),
     url(r'^(?P<assignment_id>[0-9]+)/upload_submission/$', views.upload_submission, name='upload_submission'),
+    url(r'^(?P<assignment_id>[0-9]+)/view_submissions/$', views.view_submissions, name='view_submissions'),
+    url(r'^(?P<submission_id>[0-9]+)/view_feedback/$', views.view_feedback, name='view_feedback'),
+
     url(r'^(?P<course_id>[0-9]+)/view_assignments/$', views.view_assignments, name='view_assignments'),
     url(r'^(?P<course_id>[0-9]+)/view_resources/$', views.view_resources, name='view_resources'),
 ]

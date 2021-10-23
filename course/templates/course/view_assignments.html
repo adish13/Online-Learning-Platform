@@ -38,6 +38,8 @@
         <button type="submit" class="btn btn-success">Download Assignment</button></a>
         <a href="{% url 'course:upload_submission' assignment.id %}">
         <button type="submit" class="btn btn-success">Upload Submission</button></a>
+        <a href="{% url 'course:view_submissions' assignment.id %}">
+        <button type="submit" class="btn btn-success">View my submissions</button></a>
         <br>
 </div>
     {% endfor %}

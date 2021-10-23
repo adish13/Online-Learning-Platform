@@ -13,5 +13,7 @@ urlpatterns = [
     url(r'^(?P<course_id>[0-9]+)/add_notification/$', views.add_notification, name='add_notification'),
     url(r'^(?P<course_id>[0-9]+)/view_all_assignments/$', views.view_all_assignments, name='view_all_assignments'),
     url(r'^(?P<assignment_id>[0-9]+)/view_all_submissions/$', views.view_all_submissions, name='view_all_submissions'),
+    # url(r'^download/(?P<file_name>.+)$', views.download,name='download_submission'),
+    url(r'^(?P<submission_id>[0-9]+)/give_feedback/$', views.give_feedback, name='give_feedback')
     # url(r'^(?P<assignment_id>[0-9]+)/view_feedback/$', views.view_feedback, name='view_feedback'),
 ]

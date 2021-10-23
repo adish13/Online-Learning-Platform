@@ -41,7 +41,10 @@ class Submission(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE, default=1)
     assignment = models.ForeignKey(Assignment,on_delete=models.CASCADE, default=1)
 
-
+class Feedback(models.Model):
+    content = models.TextField(max_length=500)
+    submission = models.ForeignKey(Submission,on_delete=models.CASCADE, default=1)
+    marks = models.IntegerField(default=-1)
 
 
 
