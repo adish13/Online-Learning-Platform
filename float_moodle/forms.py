@@ -8,10 +8,10 @@ from instructor.models import Course, Instructor
 # This class represents the form to register a user.
 class UserRegistration(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
-    email_id = forms.EmailField()
+    email = forms.EmailField()
     class Meta:
         model = User
-        fields = ['username', 'password','email_id']
+        fields = ['username', 'password','email']
 
 
 # This class represents the form to register a student.

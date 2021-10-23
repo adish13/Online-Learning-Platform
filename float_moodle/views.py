@@ -51,7 +51,7 @@ def register_user(request):
         user = user_form.save(commit=False)
         username = user_form.cleaned_data['username']
         password = user_form.cleaned_data['password']
-        email_id = user_form.cleaned_data['email_id']
+        email = user_form.cleaned_data['email']
         user.set_password(password)
         user.save()
 
