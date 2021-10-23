@@ -117,16 +117,10 @@ body {
 
 </head>
 {% block body %}
-
-<h1 style="font-size: 100px;font-family:Brush Script MT; color: white;text-align: center">
-        Float Moodle by team BruteForces
-    </h1>
-
-
+<h1 style="font-size: 100px;font-family:Brush Script MT; color: white;text-align: center"> Float Moodle by team BruteForces </h1>
 <div class="login-page">
-  
   <div class="form">
-    <center><div><h1>Login Form</h1></div></center>
+    <center><div><h1>Login Form</h1></div></center><br>
     <form class="register-form">
       <input type="text" placeholder="name"/>
       <input type="password" placeholder="password"/>
@@ -138,9 +132,9 @@ body {
         {% csrf_token %}
       <input id="id_username" maxlength="30" name="username" type="text" placeholder="username"/>
       <input id="id_password" maxlength="30" name="password" type="password" placeholder="password"/>
-      <button class="btn btn-danger">Login</button>
+      <button class="btn btn-danger">Login</button><br><br>
       <a href="/password_reset">Forgot password?</a> 
-      <p class="message"  style="color: #000000;"">Not registered? <a href="{% url 'divide' %}">Register Now!</a></p>
+      <p class="message"  style="color: #000000;">Not registered? <a href="{% url 'divide' %}">Register Now!</a></p>
 
     </form>
   </div>

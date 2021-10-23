@@ -24,11 +24,30 @@
                 </div>
             </div>
         </div>
-
+        <div class="col-sm-9"style="color:white;">
+            <div class="col-sm-2">
+                <a href="{% url 'instructor:instructor_detail' course.id %}">
+                    <button type="submit" class="btn btn-success" style="font-size: larger; padding-left: 12px; margin-left:0px; margin-right:0px">Home</button>
+                </a>
+            </div>
+        <div class="col-sm-2">
+            <a href="{% url 'instructor:view_all_assignments' course.id %}">
+                <button type="submit" class="btn btn-success"style="font-size: larger; margin-left:-60px">Submissions</button>
+            </a>
+        </div>
+        <div class="col-sm-2">
+            <a href="{% url 'instructor:add_resource' course.id %}">
+                <button type="submit" class="btn btn-success"style="font-size: larger; margin-left:-45px">Add a resource</button>
+            </a>
+        </div>
+        <div class="col-sm-2">
+            <a href="{% url 'instructor:add_notification' course.id %}">
+                <button type="submit" class="btn btn-success"style="font-size: larger; margin-left:5px">Notify Students</button>
+            </a>
+        </div>
+        </div>
         <br><br><br>
         <div class="col-sm-6">
-
-
                 <div class="panel-body"style="background-color:#e3f0e8;color:black;border: 3px solid #66cdaa;font-family: 'Abhaya Libre';font-size:16px;">
                     <h3 align="center"; style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892">Add Assignment</h3>
                     {% if error_message %}
