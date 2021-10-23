@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^login/', views.login_user, name='login_user'),
     url(r'^register_user/$', views.register_user, name='register_user'),
+    url(r'^register_instructor/$', views.register_instructor, name='register_instructor'),
     url(r'^logout/$', views.logout_user, name='logout_user'),
     url(r'^course/', include(('course.urls', 'course'), namespace='course')),
     url(r'^instructor/', include(('instructor.urls', 'instructor'), namespace='instructor')),
