@@ -97,9 +97,6 @@ def logout_user(request):
 def divide(request):
     return render(request, 'divide.html')
 
-def default(request):
-    return render(request,'login.html')
-    
 def add_course(request):
     course_form = CreateCourse(request.POST, request.FILES)
 

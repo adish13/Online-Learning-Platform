@@ -111,11 +111,15 @@ $('.message a').click(function(){
         {% endfor %}
 
         <div class="form-group">
-            <div class="col-sm-offset-5 col-sm-10">
+            <div class="col-sm-offset-5 col-sm-10"> 
                 <button type="submit" class="btn btn-success"> Submit </button>
-            </div>
-        </div>
+            </div> 
+        </div> 
     </form>
+    <div class="col-sm-offset-5 col-sm-12"> 
+        &nbsp; <a href="{% url 'instructor:instructor_index' %}"> <button class="btn btn-primary"> Back </button> </a>
+    </div>
+    <br> <br> <br>
 </div>
 {% endblock %}
 
