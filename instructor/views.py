@@ -39,6 +39,7 @@ def instructor_detail(request, course_id):
     course = Course.objects.get(id=course_id)
     messages = Message.objects.filter(course=course)
     form = MessageForm(request.POST or None)
+    disabled_forum = course.disabled_forum
 
     if request.method == 'POST':
         if form.is_valid():
@@ -63,7 +64,8 @@ def instructor_detail(request, course_id):
                 'course': course,
                 'courses': courses,
                 'messages': messages,
-                'form' : form
+                'form' : form,
+                'disabled_forum':disabled_forum
             }
 
         return render(request, 'instructor/instructor_detail.html', context)
@@ -185,3 +187,19 @@ def give_feedback(request, submission_id):
         return redirect('instructor:instructor_detail', course.id)
 
     return render(request, 'instructor/give_feedback.html', {'form': form,'course': course})
+
+#view to disable discussion forum when needed by teacher
+@login_required
+def disable_forum(request, course_id=None):
+    course_to_disable = Course.objects.get(id=course_id)
+    course_to_disable.disabled_forum = True
+    course_to_disable.save()
+    return redirect('instructor_detail', course_id)
+
+#view to enable discussion forum when needed by teacher
+@login_required
+def enable_forum(request, course_id=None):
+    course_to_enable = Course.objects.get(id=course_id)
+    course_to_enable.disabled_forum = False
+    course_to_enable.save()
+    return redirect('instructor_detail', course_id)

@@ -54,6 +54,10 @@
                 </div>
                 -->
                 <br>
+                {% if disabled_forum %}
+                <h1>Forum Closed</h1>
+
+                {% else %}
                  <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
 
@@ -79,6 +83,7 @@
                     {{ message.content }}<br>
                 </div>
     {% endfor %}
+    {% endif %}
         </div><br><br><br>
         </div><br><br><br>
     </div><br><br><br>

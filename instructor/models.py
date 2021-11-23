@@ -20,6 +20,7 @@ class Course(models.Model):
     code = models.CharField(max_length=100)
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
     course_logo = models.FileField(default=1)
+    disabled_forum = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

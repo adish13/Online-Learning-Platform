@@ -32,6 +32,7 @@ def detail(request, course_id):
     instructor = course.instructor
     messages = Message.objects.filter(course=course)
     form = MessageForm(request.POST or None)
+    disabled_forum = course.disabled_forum
 
     if request.method == 'POST':
         if form.is_valid():
@@ -57,7 +58,8 @@ def detail(request, course_id):
             'student': student,
             'courses': courses,
             'messages': messages,
-            'form': form
+            'form': form,
+            'disabled_forum':disabled_forum
         }
 
         return render(request, 'course/detail.html', context)
@@ -127,6 +129,8 @@ def view_feedback(request,submission_id):
     # marks = feedback.marks
     return render(request, 'course/view_feedback.html', {'feedback': feedback,'course': course})
 
+#these views enable messaging between students and also teachers
+#Deleting sent messages is also implemented
 @login_required
 def send_message(request):
     if request.method == "POST":
