@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.http.response import HttpResponseRedirect
 from .models import Student, Message, Notification, Resources, ChatMessage
 from instructor.models import Assignment, Course, Feedback, Instructor,Submission
 from django.shortcuts import render, redirect
@@ -143,11 +144,17 @@ def send_message(request):
 
 @login_required
 def view_messages(request):
-    inbox_messages = ChatMessage.objects.filter(receiver=request.user).order_by('published_at')
-    sent_messages = ChatMessage.objects.filter(sender=request.user).order_by('published_at')
+    inbox_messages = ChatMessage.objects.filter(receiver=request.user).order_by('published_at').reverse()[:4]
+    sent_messages = ChatMessage.objects.filter(sender=request.user).order_by('published_at').reverse()[:4]
     return render(request, 'course/inbox.html', {'inbox_messages': inbox_messages, 'sent_messages':sent_messages})
 
 @login_required
 def dashboard(request):
     user = request.user 
     return render(request,'course/dashboard.html',{'user':user})
+
+@login_required
+def delete_message(request,message_id=None):
+    message_to_delete=ChatMessage.objects.get(id=message_id)
+    message_to_delete.delete()
+    return redirect('view_messages')

@@ -19,4 +19,5 @@ urlpatterns = [
     path('send_message/',views.send_message,name='send_message'),
     path('view_messages/',views.view_messages,name='view_messages'),
     path('dashboard',views.dashboard,name='dashboard'),
+    path('delete/<message_id>',views.delete_message,name='delete')
 ]

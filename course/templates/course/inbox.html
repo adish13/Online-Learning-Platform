@@ -16,6 +16,7 @@
         <h2><a href="">{{ message.receiver }}</a></h2>
         <p>{{ message.msg_content|linebreaksbr }}</p>
         <h5>{{message.published_at}}</h5>
+        <a href="{% url 'delete' message.id %}">Delete</a>
     </article>
     {% endfor %}
 
