@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from instructor.models import Course
 from django.urls import reverse
-
+from django.utils import timezone
 
 # This class represents the students enrolled in the website.
 class Student(models.Model):
@@ -37,3 +37,15 @@ class Resources(models.Model):
     file_resource = models.FileField(default='')
     title = models.CharField(max_length=100)
     course = models.ForeignKey(Course, default=1, on_delete=models.CASCADE)
+
+# This class represents messaging between students
+class ChatMessage(models.Model):
+     sender = models.ForeignKey(User, related_name="sender", on_delete=models.CASCADE)
+     receiver = models.ForeignKey(User, related_name="receiver", on_delete=models.CASCADE)
+     msg_content = models.TextField(max_length=500)
+     created_at = models.DateTimeField(default=timezone.now())
+     published_at = models.DateTimeField(blank = True, null= True)
+
+     def publish(self):
+        self.published_date = timezone.now()
+        self.save() 

@@ -1,0 +1,9 @@
+{% extends 'course/basic_page.html' %}
+{% block course_active %}active{% endblock %}
+{% block body %}
+    <h2>Send Message</h2>
+    <form method="POST" class="post-form">{% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="save btn btn-default">Send</button>
+    </form>
+{% endblock %}

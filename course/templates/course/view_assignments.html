@@ -32,7 +32,7 @@
     {% for assignment in assignments reversed %}
 <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
         {{ assignment.description }}<br>
-        Post Time: {{ assignment.post_time }}<br>
+        Last Updated at : {{ assignment.post_time }}<br>
         Deadline: {{ assignment.deadline }}<br><br>
         <a href="{{ assignment.file.url }}">
         <button type="submit" class="btn btn-success">Download Assignment</button></a>

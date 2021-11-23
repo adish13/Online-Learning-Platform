@@ -1,10 +1,11 @@
 from django.contrib.auth.decorators import login_required
-from .models import Student, Message, Notification, Resources
+from .models import Student, Message, Notification, Resources, ChatMessage
 from instructor.models import Assignment, Course, Feedback, Instructor,Submission
 from django.shortcuts import render, redirect
-from .forms import MessageForm, SubmissionForm
+from .forms import MessageForm, SubmissionForm, ChatMessageForm
 import datetime
 import mimetypes
+from django.utils import timezone
 
 ## @brief view for the index page of the student.
 #
@@ -125,4 +126,28 @@ def view_feedback(request,submission_id):
     # marks = feedback.marks
     return render(request, 'course/view_feedback.html', {'feedback': feedback,'course': course})
 
+@login_required
+def send_message(request):
+    if request.method == "POST":
+        form = ChatMessageForm(request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.sender = request.user
+            message.published_at = timezone.now()
+            message.save()
+            return redirect('view_messages')
 
+    else:
+        form = ChatMessageForm()
+    return render(request, 'course/chat.html',{'form':form})
+
+@login_required
+def view_messages(request):
+    inbox_messages = ChatMessage.objects.filter(receiver=request.user).order_by('published_at')
+    sent_messages = ChatMessage.objects.filter(sender=request.user).order_by('published_at')
+    return render(request, 'course/inbox.html', {'inbox_messages': inbox_messages, 'sent_messages':sent_messages})
+
+@login_required
+def dashboard(request):
+    user = request.user 
+    return render(request,'course/dashboard.html',{'user':user})

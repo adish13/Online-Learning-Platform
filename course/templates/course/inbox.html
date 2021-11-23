@@ -1,0 +1,26 @@
+{% extends 'course/basic_page.html' %}
+{% block course_active %}active{% endblock %}
+{% block body %}
+    <h2>Recieved Messages</h2>
+    {% for message in sent_messages %}
+    <article class="post">
+        <time class="date">
+            {{ message.published_date }}
+        </time>
+        <h2><a href="">{{ message.receiver }}</a></h2>
+        <p>{{ message.msg_content|linebreaksbr }}</p>
+    </article>
+    {% endfor %}
+
+    <h2>Sent Messages</h2>
+    {% for message in inbox_messages %}
+    <article class="post">
+        <time class="date">
+            {{ message.published_date }}
+        </time>
+        <h2><a href="">{{ message.receiver }}</a></h2>
+        <p>{{ message.msg_content|linebreaksbr }}</p>
+    </article>
+    {% endfor %}
+
+{% endblock %}

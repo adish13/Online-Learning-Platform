@@ -30,8 +30,9 @@ class Assignment(models.Model):
     description = models.CharField(max_length=1000, default='')
     file = models.FileField(default='')
     course = models.ForeignKey(Course,on_delete=models.CASCADE)
-    post_time = models.CharField(max_length=100)
-    deadline = models.CharField(max_length=100)
+    post_time = models.TimeField(auto_now=True, auto_now_add=False)
+    deadline = models.TimeField()
+
 
 
 # This class represents the submissions for an assignment.
@@ -46,7 +47,14 @@ class Feedback(models.Model):
     submission = models.ForeignKey(Submission,on_delete=models.CASCADE, default=1)
     marks = models.IntegerField(default=-1)
 
+# adding TA class
+class TeachingAssistant(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE, default=1)
+    name = models.CharField(max_length=100)
+    information = models.CharField(max_length=1000,default=1)
 
+    def __str__(self):
+        return self.name
 
 
 
