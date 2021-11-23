@@ -2,24 +2,20 @@
 {% block course_active %}active{% endblock %}
 {% block body %}
     <h2>Recieved Messages</h2>
-    {% for message in sent_messages %}
+    {% for message in inbox_messages %}
     <article class="post">
-        <time class="date">
-            {{ message.published_date }}
-        </time>
-        <h2><a href="">{{ message.receiver }}</a></h2>
+        <h2><a href="">{{ message.sender }}</a></h2>
         <p>{{ message.msg_content|linebreaksbr }}</p>
+        <h5>{{message.published_at}}</h5>
     </article>
     {% endfor %}
 
     <h2>Sent Messages</h2>
-    {% for message in inbox_messages %}
+    {% for message in sent_messages %}
     <article class="post">
-        <time class="date">
-            {{ message.published_date }}
-        </time>
         <h2><a href="">{{ message.receiver }}</a></h2>
         <p>{{ message.msg_content|linebreaksbr }}</p>
+        <h5>{{message.published_at}}</h5>
     </article>
     {% endfor %}
 
