@@ -1,10 +1,8 @@
 ## @brief The models registered for the admin site
 
 from django.contrib import admin
-from .models import Student, Message, Notification, Resources
+from .models import Student, Message, Notification, Resources,Membership,ChatMessage
 
-
-admin.site.register(Student)
-admin.site.register(Message)
-admin.site.register(Notification)
-admin.site.register(Resources)
+x = Student, Message, Notification, Resources,Membership,ChatMessage
+for model in x:
+    admin.site.register(model)

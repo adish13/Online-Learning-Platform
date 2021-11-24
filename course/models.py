@@ -11,10 +11,20 @@ class Student(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE, default=1)
     name = models.CharField(max_length=100)
     roll_no = models.CharField(max_length=100)
-    course_list = models.ManyToManyField(Course)
+    course_list = models.ManyToManyField(Course,through='Membership')
 
     def __str__(self):
         return self.name
+
+# this class represents the intermediate class between Student and Course
+class Membership(models.Model):
+    isTA = models.BooleanField(default=False)
+    student = models.ForeignKey(Student , on_delete = models.CASCADE)
+    course = models.ForeignKey(Course , on_delete = models.CASCADE)
+    grade = models.CharField(max_length = 100, blank = True , null = True)
+    marks = models.FloatField(default=0, null=True)
+    class Meta:
+        unique_together = [['student' , 'course']]
 
 
 # This class represents the messages displayed in the forum.
