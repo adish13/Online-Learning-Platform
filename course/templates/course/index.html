@@ -26,6 +26,9 @@
                             <div style="height: 40px">
                                 <h4>{{ course.name }}</h4>
                             </div>
+                            <div class="w3-light-grey w3-round">
+                                <div class="w3-container w3-round w3-green w3-center" style="width:{{ progress_list|get_progress:course.id }}"()>{{progress_list|get_progress:course.id}}</div>
+                            </div>
                             <!-- View Details -->
                             <a href="{% url 'course:detail' course.id %}" class="btn btn-primary btn-sm" role="button">View Details</a>
                         </div>

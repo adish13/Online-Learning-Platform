@@ -7,6 +7,12 @@ from .forms import MessageForm, SubmissionForm, ChatMessageForm
 import datetime
 import mimetypes
 from django.utils import timezone
+from django.template.defaulttags import register
+
+#register custom filter for looking up from dictionary
+@register.filter
+def get_progress(dictionary, key):
+    return dictionary.get(key)
 
 ## @brief view for the index page of the student.
 #
@@ -16,8 +22,22 @@ from django.utils import timezone
 def index(request):
     student = Student.objects.get(user = request.user)
     courses = student.course_list.all()
+    progress_list={}
+    for c in courses:
+        assignments = Assignment.objects.filter(course=c)
+        no_of_assignments = len(assignments)
+        if(no_of_assignments==0):
+            no_of_assignments=1
+        no_of_submissions = 0
+        for a in assignments:
+            submission = Submission.objects.filter(user = request.user, assignment = a)
+            if(len(submission)>=1):
+                no_of_submissions+=1
+        progress = no_of_submissions/no_of_assignments*100
+        progress_list[c.id]=str(progress)+"%"
+
     notifications = Notification.objects.filter(course__in = courses)
-    return render(request, 'course/index.html', {'courses': courses, 'notifications': notifications})
+    return render(request, 'course/index.html', {'courses': courses, 'notifications': notifications,'progress_list': progress_list})
 
 
 # view for the detail page of the course.
