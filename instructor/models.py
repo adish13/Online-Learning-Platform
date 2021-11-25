@@ -28,11 +28,13 @@ class Course(models.Model):
 
 # This class represents the assignments in a course.
 class Assignment(models.Model):
+    name = models.CharField(max_length=20, default='')
     description = models.CharField(max_length=1000, default='')
     file = models.FileField(default='')
     course = models.ForeignKey(Course,on_delete=models.CASCADE)
-    post_time = models.TimeField(auto_now=True, auto_now_add=False)
-    deadline = models.TimeField()
+    post_time = models.TimeField( auto_now_add=False)
+    deadline = models.DateTimeField(blank = True, null= True)
+    closed = models.BooleanField(default=False)
 
 
 

@@ -10,6 +10,7 @@ from course.forms import MessageForm
 import datetime
 import mimetypes
 from float_moodle import settings
+from django.utils import timezone
 
 # view for the index page of the instructor.
 # This view is called by /instructor_index url.\n
@@ -102,9 +103,9 @@ def add_assignment(request, course_id):
         assignment.course = course
         assignment.save()
         notification = Notification()
-        notification.content = "New Assignment Uploaded"
+        notification.content = "New Assignment Uploaded |" + " Due at "+ str(assignment.deadline)[:-9]
         notification.course = course
-        notification.time = datetime.datetime.now().strftime('%H:%M, %d/%m/%y')
+        notification.time = timezone.now()
         notification.save()
         return redirect('instructor:instructor_detail', course.id)
 

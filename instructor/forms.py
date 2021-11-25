@@ -14,7 +14,7 @@ class AssignmentForm(forms.ModelForm):
 
     class Meta:
         model = Assignment
-        fields = ['description', 'file', 'deadline']
+        fields = ['name', 'description', 'file', 'deadline']
 
 # This class represents the form to add a resource.
 class ResourceForm(forms.ModelForm):
