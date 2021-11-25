@@ -1,5 +1,5 @@
 from django import forms
-from .models import Assignment,Submission,Feedback
+from .models import Assignment,Submission,Feedback, StudentBulkUpload
 from course.models import Notification, Resources
 
 # This class represents the form to add a notification.
@@ -27,3 +27,8 @@ class FeedbackForm(forms.ModelForm):
     class Meta:
         model = Feedback
         fields = ['content','marks']
+
+class StudentBulkUploadForm(forms.ModelForm):
+    class Meta:
+        model = StudentBulkUpload
+        fields = ['csv_file']

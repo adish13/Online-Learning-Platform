@@ -59,5 +59,8 @@ class TeachingAssistant(models.Model):
     def __str__(self):
         return self.name
 
-
-
+#adding a csv model for grades file
+class StudentBulkUpload(models.Model):
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, default = 1)
+    date_uploaded = models.DateTimeField(auto_now=True)
+    csv_file = models.FileField(upload_to='media/')

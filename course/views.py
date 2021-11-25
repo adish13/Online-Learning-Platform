@@ -43,7 +43,7 @@ def index(request):
                     newnotif.time= a.deadline
                     newnotif.content = str(a.name) + " Assignment over-due"
                     newnotif.save()
-        progress = no_of_submissions/no_of_assignments*100
+        progress = int(no_of_submissions/no_of_assignments*100)
         progress_list[c.id]=str(progress)+"%"
 
     notifications = Notification.objects.filter(course__in = courses)
@@ -145,9 +145,9 @@ def upload_submission(request, assignment_id):
 @login_required
 def view_submissions(request,assignment_id):
     assignment = Assignment.objects.get(id=assignment_id)
-    submissions = Submission.objects.filter(user=request.user)
+    submissions = Submission.objects.filter(user=request.user, assignment = assignment)
     course = assignment.course
-    return render(request, 'course/view_submissions.html', {'submissions' : submissions,'course': course})
+    return render(request, 'course/view_submissions.html', {'submissions' : submissions,'course': course, 'name':assignment.name})
 
 @login_required
 def view_feedback(request,submission_id):
