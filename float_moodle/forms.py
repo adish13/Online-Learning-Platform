@@ -29,4 +29,6 @@ class InstructorForm(forms.ModelForm):
 class CreateCourse(forms.ModelForm):    
     class Meta:
         model = Course
-        fields = ['name', 'code', 'course_logo']
+        # fields = ['name', 'code','course_logo']
+        fields = ['name', 'code','course_access_code','TA_code', 'course_logo']
+

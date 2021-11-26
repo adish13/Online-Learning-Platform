@@ -22,7 +22,7 @@ urlpatterns = [
     url(r'^logout/$', views.logout_user, name='logout_user'),
     url(r'^course/', include(('course.urls', 'course'), namespace='course')),
     url(r'^instructor/', include(('instructor.urls', 'instructor'), namespace='instructor')),
-    url(r'^create_course', views.add_course, name='create_course'),
+    url(r'^create_course/$', views.add_course, name='create_course'),
     path('',include('course.urls')),
     path('',include('instructor.urls')),    
 ]

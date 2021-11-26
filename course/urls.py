@@ -22,4 +22,7 @@ urlpatterns = [
     path('delete/<message_id>',views.delete_message,name='delete'),
     url(r'^(?P<course_id>[0-9]+)/(?P<is_it_res>\d)/(?P<id>[0-9]+)/(?P<done>\d)/mark_as_done/$', views.mark_as_done, name='mark_as_done'),
     
+    path('join_course',views.join_course,name='join_course'),
+
+    path('delete/<message_id>',views.delete_message,name='delete')
 ]
