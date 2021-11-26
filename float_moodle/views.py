@@ -2,7 +2,7 @@
 
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from .forms import UserRegistration, StudentRegistration, InstructorForm,CreateCourse
+from .forms import UserRegistration, StudentRegistration, InstructorForm,CreateCourse,TAform
 from course.models import Progress, Student, User
 from django.contrib.auth.forms import PasswordResetForm
 from instructor.models import Instructor
@@ -90,6 +90,26 @@ def register_instructor(request):
         return login_user(request)
 
     return render(request,'register_instructor.html', {'user_form': user_form, 'instructor_form': instructor_form})
+
+# view for registration page of TA
+
+# def register_TA(request):
+#     user_form = UserRegistration(request.POST or None)
+#     TA_form = TAform(request.POST or None)
+
+#     if user_form.is_valid() and TA_form.is_valid():
+#         user = user_form.save(commit=False)
+#         username = user_form.cleaned_data['username']
+#         password = user_form.cleaned_data['password']
+#         user.set_password(password)
+#         user.save()
+
+#         TA = TA_form.save(commit=False)
+#         TA.user = User.objects.get(id=user.id)
+#         TA.save()
+#         return login_user(request)
+
+#     return render(request,'register_TA.html', {'user_form': user_form, 'TA_form': TA_form})
 
 ## @brief view for the logout page.
 #
