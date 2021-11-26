@@ -1,9 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.http.response import HttpResponseRedirect
-from .models import Student, Message, Notification, Resources, ChatMessage
+from .models import Student, Message, Notification, Resources, ChatMessage,Membership
 from instructor.models import Assignment, Course, Feedback, Instructor,Submission
 from django.shortcuts import render, redirect
-from .forms import MessageForm, SubmissionForm, ChatMessageForm
+from .forms import MessageForm, SubmissionForm, ChatMessageForm,JoinCourseForm
 import datetime
 import mimetypes
 from django.utils import timezone
@@ -170,7 +170,11 @@ def send_message(request):
 def view_messages(request):
     inbox_messages = ChatMessage.objects.filter(receiver=request.user).order_by('published_at').reverse()[:4]
     sent_messages = ChatMessage.objects.filter(sender=request.user).order_by('published_at').reverse()[:4]
-    return render(request, 'course/inbox.html', {'inbox_messages': inbox_messages, 'sent_messages':sent_messages})
+    try:
+        student = Student.objects.get(user=request.user)
+        return render(request, 'course/inbox.html', {'inbox_messages': inbox_messages, 'sent_messages':sent_messages})
+    except:
+        return render(request, 'instructor/inbox.html', {'inbox_messages': inbox_messages, 'sent_messages':sent_messages})
 
 @login_required
 def dashboard(request):
@@ -182,3 +186,26 @@ def delete_message(request,message_id=None):
     message_to_delete=ChatMessage.objects.get(id=message_id)
     message_to_delete.delete()
     return redirect('view_messages')
+
+@login_required
+def join_course(request):
+    if request.method == 'POST':
+        form = JoinCourseForm(request.POST)
+        if form.is_valid():
+            student = Student.objects.get(user = request.user)
+            if Course.objects.filter(course_access_code = form.cleaned_data.get('course_access_code')):
+                course = Course.objects.filter(course_access_code = form.cleaned_data.get('course_access_code')).first()
+                enroll = Membership(student=student , course = course)
+
+                if(course.TA_code == form.cleaned_data.get('TA_code')):
+                    enroll.isTA = True
+                    enroll.save()
+                else:
+                    enroll.save()
+                print('Added to course successfully')
+            else:
+                print('No course exists with access code: ', form.cleaned_data.get('access_code'))
+        return redirect('dashboard', permanent = True)
+    else:
+        form = JoinCourseForm()
+        return render(request , 'course/join_course.html',{'form': form})

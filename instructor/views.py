@@ -5,15 +5,18 @@ from django.contrib.auth.decorators import login_required
 from .models import Instructor, Submission, Assignment
 from course.models import Course, Message, Notification, Student
 from django.shortcuts import render, HttpResponse, redirect
-from .forms import AssignmentForm, NotificationForm, ResourceForm, FeedbackForm
+from .forms import AssignmentForm, NotificationForm, ResourceForm, FeedbackForm, SendInviteForm
 from course.forms import MessageForm
-import datetime
+import datetime,threading
 import mimetypes
 from float_moodle import settings
+from .functions import send_email,course_invite_text
 
 # view for the index page of the instructor.
 # This view is called by /instructor_index url.\n
 # It returns the instructor's homepage containing links to all the courses he teaches.
+email_from = 'shah.adish13@gmail.com'
+
 @login_required
 def instructor_index(request):
     user = request.user
@@ -203,3 +206,18 @@ def enable_forum(request, course_id=None):
     course_to_enable.disabled_forum = False
     course_to_enable.save()
     return redirect('instructor_detail', course_id)
+
+def send_invite(request,course_id):
+    form = SendInviteForm(request.POST or None)
+    course = Course.objects.get(id=course_id)
+    if form.is_valid():
+        email_list = [s.strip() for s in form.cleaned_data.get('email_list').split(",")]
+        message = course_invite_text(course.name,course.code)
+        if form.cleaned_data.get('assistant_email'):
+            message = 'Welcome to Float Moodle. This is an email giving you access to course '+course.name+'. Your access code is : ' + course.code + '. Your assistant code is : ' + course.assistant_code
+        subject = 'Course invitation for course ' + course.name
+        recipient_list = email_list
+        thread = threading.Thread(target=send_email,args=(subject, message, email_from, recipient_list, None,))
+        thread.start()
+        return redirect('instructor:instructor_detail', course.id)
+    return render(request, 'instructor/send_invite.html', {'course': course, 'form': form})

@@ -16,8 +16,10 @@ class Instructor(models.Model):
 
 # This class represents the courses.
 class Course(models.Model):
-    name = models.CharField(max_length=100)
-    code = models.CharField(max_length=100)
+    name = models.CharField(max_length=100,default="NAME")
+    code = models.CharField(max_length=100,default="CODE")
+    course_access_code = models.CharField(max_length=100,default="COURSE_ACCESS_CODE")
+    TA_code = models.CharField(max_length=100,default="TA_CODE")
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
     course_logo = models.FileField(default=1)
     disabled_forum = models.BooleanField(default=False)
@@ -28,6 +30,7 @@ class Course(models.Model):
 
 # This class represents the assignments in a course.
 class Assignment(models.Model):
+    name = models.CharField(max_length=100,default='')
     description = models.CharField(max_length=1000, default='')
     file = models.FileField(default='')
     course = models.ForeignKey(Course,on_delete=models.CASCADE)

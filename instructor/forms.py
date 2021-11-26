@@ -27,3 +27,7 @@ class FeedbackForm(forms.ModelForm):
     class Meta:
         model = Feedback
         fields = ['content','marks']
+
+class SendInviteForm(forms.Form):
+    email_list = forms.CharField(widget=forms.Textarea)
+    assistant_invite = forms.BooleanField(required=False)
