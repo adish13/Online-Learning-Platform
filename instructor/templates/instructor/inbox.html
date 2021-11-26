@@ -1,0 +1,27 @@
+{% extends 'instructor/instructor_basic_page.html' %}
+{% block course_active %}active{% endblock %}
+{% block body %}
+    <h2>Recieved Messages</h2>
+    {% for message in inbox_messages %}
+    <article class="post">
+        <h2><a href="">{{ message.sender }}</a></h2>
+        <p>{{ message.msg_content|linebreaksbr }}</p>
+        <h5>{{message.published_at}}</h5>
+    </article>
+    {% endfor %}
+
+    <h2>Sent Messages</h2>
+    {% for message in sent_messages %}
+    <article class="post">
+        <h2><a href="">{{ message.receiver }}</a></h2>
+        <p>{{ message.msg_content|linebreaksbr }}</p>
+        <h5>{{message.published_at}}</h5>
+        <a href="{% url 'delete' message.id %}">Delete</a>
+    </article>
+    {% endfor %}
+
+    <article>
+        <a href="{%url 'send_message' %}">Send a Message</a>
+    </article>
+
+{% endblock %}
