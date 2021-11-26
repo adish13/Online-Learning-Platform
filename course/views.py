@@ -176,7 +176,11 @@ def send_message(request):
 
     else:
         form = ChatMessageForm()
-    return render(request, 'course/chat.html',{'form':form})
+    try:
+        student = Student.objects.get(user=request.user)
+        return render(request, 'course/chat.html',{'form':form})
+    except:
+        return render(request, 'instructor/chat.html', {'form':form})
 
 @login_required
 def view_messages(request):
