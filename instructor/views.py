@@ -2,15 +2,17 @@
 import os
 from wsgiref.util import FileWrapper
 from django.contrib.auth.decorators import login_required
-from .models import Instructor, Submission, Assignment
+from .models import Feedback, Instructor, Submission, Assignment
 from course.models import Course, Message, Notification, Student
 from django.shortcuts import render, HttpResponse, redirect
 from .forms import AssignmentForm, NotificationForm, ResourceForm, FeedbackForm, SendInviteForm
+from .forms import AssignmentForm, NotificationForm, ResourceForm, FeedbackForm, StudentBulkUploadForm
 from course.forms import MessageForm
 import datetime,threading
 import mimetypes
 from float_moodle import settings
 from .functions import send_email,course_invite_text
+from django.utils import timezone
 
 # view for the index page of the instructor.
 # This view is called by /instructor_index url.\n
@@ -105,9 +107,9 @@ def add_assignment(request, course_id):
         assignment.course = course
         assignment.save()
         notification = Notification()
-        notification.content = "New Assignment Uploaded"
+        notification.content = "New Assignment Uploaded |" + " Due at "+ str(assignment.deadline)[:-9]
         notification.course = course
-        notification.time = datetime.datetime.now().strftime('%H:%M, %d/%m/%y')
+        notification.time = timezone.now()
         notification.save()
         return redirect('instructor:instructor_detail', course.id)
 
@@ -131,7 +133,7 @@ def add_resource(request, course_id):
         notification = Notification()
         notification.content = "New Resource Added - " + resource.title
         notification.course = course
-        notification.time = datetime.datetime.now().strftime('%H:%M, %d/%m/%y')
+        notification.time = timezone.now()
         notification.save()
         return redirect('instructor:instructor_detail', course.id)
 
@@ -221,3 +223,46 @@ def send_invite(request,course_id):
         thread.start()
         return redirect('instructor:instructor_detail', course.id)
     return render(request, 'instructor/send_invite.html', {'course': course, 'form': form})
+
+#view to add grades using a csv file
+@login_required
+def add_grades(request, assignment_id):
+    assignment = Assignment.objects.get(id=assignment_id)
+    course = assignment.course
+    if request.method == 'GET':
+        form = StudentBulkUploadForm()
+        return render(request, 'instructor/add_grades.html', {'form':form, 'course':course, 'name':assignment.name})
+
+    # If not GET method then proceed
+    try:
+        form = StudentBulkUploadForm(data=request.POST, files=request.FILES)
+        if form.is_valid():
+            csv_file = form.cleaned_data['csv_file']
+
+            file_data = csv_file.read().decode('utf-8')
+            lines = file_data.split('\n')
+
+            # loop over the lines and save them in db. If error, store as string and then display
+            for line in lines[:-1]:
+                fields = line.split(',')
+                student = Student.objects.get(name = str(fields[0]))
+                submission = Submission.objects.get(user=student.user, assignment=assignment)
+                marks = fields[1]
+                content = str(fields[2])
+                #add feedback
+                feedback = Feedback()
+                feedback.content = content
+                feedback.submission = submission
+                feedback.marks = marks
+                feedback.save()
+            
+            notification = Notification()
+            notification.content = "Feedback added - " + str(assignment.name)
+            notification.course = course
+            notification.time = timezone.now()
+            notification.save()
+
+            return redirect('view_all_assignments', course.id)
+
+    except Exception as e:
+        return redirect('add_grades', assignment_id)

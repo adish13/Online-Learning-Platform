@@ -18,6 +18,8 @@ urlpatterns = [
     url(r'^(?P<course_id>[0-9]+)/instructor_detail/send_invite/$', views.send_invite, name='send_invite'),
 
     # url(r'^download/(?P<file_name>.+)$', views.download,name='download_submission'),
-    url(r'^(?P<submission_id>[0-9]+)/give_feedback/$', views.give_feedback, name='give_feedback')
+    url(r'^(?P<submission_id>[0-9]+)/give_feedback/$', views.give_feedback, name='give_feedback'),
+    url(r'^(?P<assignment_id>[0-9]+)/add_grades/$', views.add_grades, name='add_grades')
+    
     # url(r'^(?P<assignment_id>[0-9]+)/view_feedback/$', views.view_feedback, name='view_feedback'),
 ]

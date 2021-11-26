@@ -39,7 +39,7 @@ class Message(models.Model):
 class Notification(models.Model):
     content = models.TextField(max_length=500)
     course = models.ForeignKey(Course, default=1, on_delete=models.CASCADE)
-    time = models.CharField(max_length=100)
+    time = models.DateTimeField(blank = True, null= True)
 
 
 # This class represents the resources(lectures/study materials) for a course.
@@ -53,7 +53,6 @@ class ChatMessage(models.Model):
      sender = models.ForeignKey(User, related_name="sender", on_delete=models.CASCADE)
      receiver = models.ForeignKey(User, related_name="receiver", on_delete=models.CASCADE)
      msg_content = models.TextField(max_length=500)
-     created_at = models.DateTimeField(default=timezone.now())
      published_at = models.DateTimeField(blank = True, null= True)
 
      def publish(self):
