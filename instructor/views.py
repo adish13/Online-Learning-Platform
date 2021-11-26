@@ -2,7 +2,7 @@
 import os
 from wsgiref.util import FileWrapper
 from django.contrib.auth.decorators import login_required
-from .models import Feedback, Instructor, Submission, Assignment
+from .models import Feedback, Instructor, Submission, Assignment,ProgressInstructor
 from course.models import Course, Message, Notification, Student
 from django.shortcuts import render, HttpResponse, redirect
 from .forms import AssignmentForm, NotificationForm, ResourceForm, FeedbackForm, SendInviteForm
@@ -62,6 +62,10 @@ def instructor_detail(request, course_id):
 
     else:
         form = MessageForm()
+        #find assignments to be graded in this course
+        progress = ProgressInstructor.objects.get(instructor=instructor, course = course)
+        assignments = Assignment.objects.filter(course = course)
+        finished_assignments = progress.assignments
 
         context = {
                 'user': user,
@@ -70,7 +74,9 @@ def instructor_detail(request, course_id):
                 'courses': courses,
                 'messages': messages,
                 'form' : form,
-                'disabled_forum':disabled_forum
+                'disabled_forum':disabled_forum,
+                'assignments':assignments,
+                'finished_assignments':finished_assignments,
             }
 
         return render(request, 'instructor/instructor_detail.html', context)
@@ -154,7 +160,9 @@ def add_resource(request, course_id):
 def view_all_assignments(request, course_id):
     course = Course.objects.get(id=course_id)
     assignments = Assignment.objects.filter(course=course)
-    return render(request, 'instructor/view_all_assignments.html', {'assignments' : assignments,'course': course})
+    instructor = Instructor.objects.get(user=request.user)
+    progress = ProgressInstructor.objects.get(instructor = instructor, course=course)
+    return render(request, 'instructor/view_all_assignments.html', {'assignments' : assignments,'course': course, 'progress':progress})
 
 
 # view for the submissions page of an assignment.
@@ -273,3 +281,18 @@ def add_grades(request, assignment_id):
 
     except Exception as e:
         return redirect('add_grades', assignment_id)
+
+#view to mark_as_done assignments
+@login_required
+def mark_as_done(request, course_id, id, done):
+    course = Course.objects.get(id = course_id)
+    instructor = Instructor.objects.get(user=request.user)
+    progress = ProgressInstructor.objects.get(instructor = instructor, course=course)
+    assignment = Assignment.objects.get(id=id)
+    #if not done add assignment to assignments list of progress
+    if int(done) == 0:
+        progress.assignments.add(assignment)
+    else:
+        progress.assignments.remove(assignment)
+    progress.save()
+    return redirect('view_all_assignments', course_id)

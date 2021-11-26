@@ -68,3 +68,9 @@ class StudentBulkUpload(models.Model):
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, default = 1)
     date_uploaded = models.DateTimeField(auto_now=True)
     csv_file = models.FileField(upload_to='media/')
+
+# model for recording progress for each course for each teacher
+class ProgressInstructor(models.Model):
+    instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course,on_delete=models.CASCADE)
+    assignments = models.ManyToManyField(Assignment)
