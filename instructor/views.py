@@ -132,6 +132,7 @@ def add_resource(request, course_id):
         resource = form.save(commit=False)
         resource.file_resource = request.FILES['file_resource']
         resource.course = course
+        resource.post_time = timezone.now()
         resource.save()
         #increase total for course
         course.total +=1

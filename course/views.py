@@ -60,6 +60,12 @@ def detail(request, course_id):
     messages = Message.objects.filter(course=course)
     form = MessageForm(request.POST or None)
     disabled_forum = course.disabled_forum
+    #find all assignments to be completed in the course
+    progress = Progress.objects.get(student = student, course = course)
+    assignments = Assignment.objects.filter(course = course, closed = False)
+    resources = Resources.objects.filter(course = course)
+    finished_assignments = progress.assignments
+    finished_resources = progress.resources
 
     if request.method == 'POST':
         if form.is_valid():
@@ -86,7 +92,11 @@ def detail(request, course_id):
             'courses': courses,
             'messages': messages,
             'form': form,
-            'disabled_forum':disabled_forum
+            'disabled_forum':disabled_forum,
+            'assignments': assignments,
+            'resources': resources,
+            'finished_assignments': finished_assignments,
+            'finished_resources': finished_resources,
         }
 
         return render(request, 'course/detail.html', context)
@@ -278,17 +288,20 @@ def view_grades(request, course_id):
     marks_list = {}
     total_list = {}
     total_marks = 0
-    for a in assignments:
-        submission = Submission.objects.get(user = request.user, assignment =a)
-        feedback = Feedback.objects.filter(submission = submission)[0]
-        marks_list[a.id] = int(feedback.marks)
-        total_list[a.id] = int(feedback.marks*int(a.weightage)/100)
-        total_marks += total_list[a.id]
-    context = {
-        'course' : course,
-        'assignments' : assignments,
-        'marks_list' : marks_list,
-        'total_list': total_list,
-        'total_marks':total_marks
-    }
-    return render(request,'course/view_grades.html',context)
+    try:
+        for a in assignments:
+            submission = Submission.objects.get(user = request.user, assignment =a)
+            feedback = Feedback.objects.filter(submission = submission)[0]
+            marks_list[a.id] = int(feedback.marks)
+            total_list[a.id] = int(feedback.marks*int(a.weightage)/100)
+            total_marks += total_list[a.id]
+        context = {
+            'course' : course,
+            'assignments' : assignments,
+            'marks_list' : marks_list,
+            'total_list': total_list,
+            'total_marks':total_marks
+        }
+        return render(request,'course/view_grades.html',context)
+    except:
+        return redirect('course:detail', course_id)
