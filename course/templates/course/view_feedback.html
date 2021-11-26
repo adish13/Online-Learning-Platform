@@ -28,18 +28,25 @@
         <div class="col-sm-7" style="position:fixed-righ; overflow-y: scroll; height:650px;border: 3px solid #66cdaa;background-color:#e3f0e8;color:black;font-family: 'Abhaya Libre';font-size:16px;">
             <h3 align="center"; style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892">Feedback</h3>
     
-
+            {% if feedback %}
                 <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
             <h3>Marks Obtained</h3>
-            {{ feedback.marks }} 
+            {{ feedback.0.marks }} 
         </div>
 
             <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
             <h3>Comments</h3>
-            {{ feedback.content }} 
+            {{ feedback.0.content }} 
                    
     
                 </div>
+
+                {% else %} 
+
+    <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
+        No Feedback so far. 
+    </div>
+                {% endif %}
     
             </div>
     </div>

@@ -46,12 +46,21 @@
         {% endif %}
         <a href="{% url 'course:view_submissions' assignment.id %}">
         <button type="submit" class="btn btn-success">View my submissions</button></a>
+        <br><br>
+        {% if assignment in progress.assignments.all %}
+        <a href="{% url 'course:mark_as_done' course.id 0 assignment.id 1 %}">
+            <button type="submit" class="btn btn-success">Done</button></a>
+        {% else %}
+        <a href="{% url 'course:mark_as_done' course.id 0 assignment.id 0 %}">
+            <button type="submit" class="btn btn-success">Mark as Done</button></a>
+        {% endif %}
         <br>
+            
 </div>
     {% endfor %}
     {% else%}
     <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
-        No submissions made so far.
+        No Assignments made so far.
     </div>
     {% endif %}
         </div><br><br><br>

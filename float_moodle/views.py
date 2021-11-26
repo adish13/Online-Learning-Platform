@@ -3,7 +3,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from .forms import UserRegistration, StudentRegistration, InstructorForm,CreateCourse
-from course.models import Student, User
+from course.models import Progress, Student, User
 from django.contrib.auth.forms import PasswordResetForm
 from instructor.models import Instructor
 from django.db.models.query_utils import Q
@@ -59,7 +59,13 @@ def register_user(request):
         student.user = User.objects.get(id=user.id)
         student.save()
         student_form.save_m2m() # saves the many to many field relation (between the course and student model) entered in the form while selecting the courses
-
+        #make progress model for each course
+        courses=student_form.cleaned_data['course_list']
+        for c in courses:
+            progress=Progress()
+            progress.student=student
+            progress.course=c
+            progress.save()            
         return login_user(request)
 
     return render(request,'register_user.html', {'user_form': user_form, 'student_form': student_form})

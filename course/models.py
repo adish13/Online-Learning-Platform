@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
-from instructor.models import Course
+from instructor.models import Assignment, Course
 from django.urls import reverse
 from django.utils import timezone
 
@@ -48,3 +48,12 @@ class ChatMessage(models.Model):
      def publish(self):
         self.published_date = timezone.now()
         self.save() 
+
+# model for recording progress for each course for each student
+class Progress(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course,on_delete=models.CASCADE)
+    assignments = models.ManyToManyField(Assignment)
+    resources = models.ManyToManyField(Resources)
+    done = models.IntegerField(default=0)
+    total = models.IntegerField(default = 0)

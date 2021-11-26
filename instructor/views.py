@@ -102,6 +102,9 @@ def add_assignment(request, course_id):
         assignment.post_time = datetime.datetime.now().strftime('%H:%M, %d/%m/%y')
         assignment.course = course
         assignment.save()
+        #increase total for course
+        course.total +=1
+        course.save()
         notification = Notification()
         notification.content = "New Assignment Uploaded |" + " Due at "+ str(assignment.deadline)[:-9]
         notification.course = course
@@ -126,6 +129,9 @@ def add_resource(request, course_id):
         resource.file_resource = request.FILES['file_resource']
         resource.course = course
         resource.save()
+        #increase total for course
+        course.total +=1
+        course.save()
         notification = Notification()
         notification.content = "New Resource Added - " + resource.title
         notification.course = course

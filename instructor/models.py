@@ -21,6 +21,7 @@ class Course(models.Model):
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
     course_logo = models.FileField(default=1)
     disabled_forum = models.BooleanField(default=False)
+    total = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name

@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.http.response import HttpResponseRedirect
-from .models import Student, Message, Notification, Resources, ChatMessage
+from .models import Progress, Student, Message, Notification, Resources, ChatMessage
 from instructor.models import Assignment, Course, Feedback, Instructor,Submission
 from django.shortcuts import render, redirect
 from .forms import MessageForm, SubmissionForm, ChatMessageForm
@@ -24,15 +24,9 @@ def index(request):
     courses = student.course_list.all()
     progress_list={}
     for c in courses:
+        progress = Progress.objects.get(student = student, course = c)
         assignments = Assignment.objects.filter(course=c)
-        no_of_assignments = len(assignments)
-        if(no_of_assignments==0):
-            no_of_assignments=1
-        no_of_submissions = 0
         for a in assignments:
-            submission = Submission.objects.filter(user = request.user, assignment = a)
-            if(len(submission)>=1):
-                no_of_submissions+=1
             #close the assignment if over due and add a notification
             if not a.closed:
                 if timezone.now()>= a.deadline:
@@ -43,8 +37,10 @@ def index(request):
                     newnotif.time= a.deadline
                     newnotif.content = str(a.name) + " Assignment over-due"
                     newnotif.save()
-        progress = int(no_of_submissions/no_of_assignments*100)
-        progress_list[c.id]=str(progress)+"%"
+        p = 0
+        if(c.total>0):
+            p = int(progress.done/c.total*100)
+        progress_list[c.id]=str(p)+"%"
 
     notifications = Notification.objects.filter(course__in = courses)
     return render(request, 'course/index.html', {'courses': courses, 'notifications': notifications,'progress_list': progress_list})
@@ -102,9 +98,12 @@ def detail(request, course_id):
 def view_assignments(request, course_id):
     course = Course.objects.get(id=course_id)
     assignments = Assignment.objects.filter(course=course)
+    student = Student.objects.get(user = request.user)
+    progress = Progress.objects.get(course = course, student =student)
     context = {
         'course' : course,
         'assignments' : assignments,
+        'progress':progress,
     }
     return render(request,'course/view_assignments.html',context)
 
@@ -116,9 +115,12 @@ def view_assignments(request, course_id):
 def view_resources(request, course_id):
     course = Course.objects.get(id=course_id)
     resources = Resources.objects.filter(course=course)
+    student = Student.objects.get(user = request.user)
+    progress = Progress.objects.get(course = course, student =student)
     context = {
         'course' : course,
         'resources' : resources,
+        'progress':progress,
     }
     return render(request,'course/view_resources.html',context)
 
@@ -151,10 +153,9 @@ def view_submissions(request,assignment_id):
 
 @login_required
 def view_feedback(request,submission_id):
-    feedback = Feedback.objects.filter(submission=submission_id)[0]
+    feedback = Feedback.objects.filter(submission=submission_id)
     submission = Submission.objects.get(id=submission_id)
     course = submission.assignment.course
-    print(feedback)
     # content = feedback.content
     # marks = feedback.marks
     return render(request, 'course/view_feedback.html', {'feedback': feedback,'course': course})
@@ -192,3 +193,32 @@ def delete_message(request,message_id=None):
     message_to_delete=ChatMessage.objects.get(id=message_id)
     message_to_delete.delete()
     return redirect('view_messages')
+
+#view to mark_as_done assignments and resources
+@login_required
+def mark_as_done(request, course_id, is_it_res, id, done):
+    course = Course.objects.get(id = course_id)
+    student = Student.objects.get(user=request.user)
+    progress = Progress.objects.get(student=student, course=course)
+    if(int(is_it_res) == 1):
+        resource = Resources.objects.get(id=id)
+        #if not done add resource to resources list of progress
+        if int(done)==0:
+            progress.done +=1
+            progress.resources.add(resource)
+        else:
+            progress.done -=1
+            progress.resources.remove(resource)
+        progress.save()
+        return redirect('view_resources', course_id)
+    else:
+        assignment = Assignment.objects.get(id=id)
+        #if not done add assignment to assignments list of progress
+        if int(done) == 0:
+            progress.done +=1
+            progress.assignments.add(assignment)
+        else:
+            progress.done -=1
+            progress.assignments.remove(assignment)
+        progress.save()
+        return redirect('view_assignments', course_id)

@@ -36,7 +36,15 @@
                 <div style="position:right">
         <a href="{{ resource.file_resource.url }}" style="text-align:right">
             <button type="submit" class="btn btn-success">Download</button>
-        </a><br>
+        </a>
+        {% if resource in progress.resources.all %}
+        <a href="{% url 'course:mark_as_done' course.id 1 resource.id 1 %}">
+            <button type="submit" class="btn btn-success">Done</button></a>
+        {% else %}
+        <a href="{% url 'course:mark_as_done' course.id 1 resource.id 0 %}">
+            <button type="submit" class="btn btn-success">Mark as Done</button></a>
+        {% endif %}
+            <br>
                     </div>
 
             </div>
