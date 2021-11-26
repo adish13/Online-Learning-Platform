@@ -1,10 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http.response import HttpResponseRedirect
-<<<<<<< HEAD
 from .models import Progress, Student, Message, Notification, Resources, ChatMessage
-=======
 from .models import Student, Message, Notification, Resources, ChatMessage,Membership
->>>>>>> fb42e00890576b66f349cacbd29713b79adc1c9a
 from instructor.models import Assignment, Course, Feedback, Instructor,Submission
 from django.shortcuts import render, redirect
 from .forms import MessageForm, SubmissionForm, ChatMessageForm,JoinCourseForm
@@ -202,7 +199,6 @@ def delete_message(request,message_id=None):
     message_to_delete.delete()
     return redirect('view_messages')
 
-<<<<<<< HEAD
 #view to mark_as_done assignments and resources
 @login_required
 def mark_as_done(request, course_id, is_it_res, id, done):
@@ -231,7 +227,6 @@ def mark_as_done(request, course_id, is_it_res, id, done):
             progress.assignments.remove(assignment)
         progress.save()
         return redirect('view_assignments', course_id)
-=======
 @login_required
 def join_course(request):
     if request.method == 'POST':
@@ -254,4 +249,3 @@ def join_course(request):
     else:
         form = JoinCourseForm()
         return render(request , 'course/join_course.html',{'form': form})
->>>>>>> fb42e00890576b66f349cacbd29713b79adc1c9a
