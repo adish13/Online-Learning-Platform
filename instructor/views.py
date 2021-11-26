@@ -214,7 +214,7 @@ def send_invite(request,course_id):
     course = Course.objects.get(id=course_id)
     if form.is_valid():
         email_list = [s.strip() for s in form.cleaned_data.get('email_list').split(",")]
-        message = course_invite_text(course.name,course.code)
+        message = course_invite_text(course.name,course.course_access_code)
         if form.cleaned_data.get('assistant_email'):
             message = 'Welcome to Float Moodle. This is an email giving you access to course '+course.name+'. Your access code is : ' + course.code + '. Your assistant code is : ' + course.assistant_code
         subject = 'Course invitation for course ' + course.name

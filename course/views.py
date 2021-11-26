@@ -178,8 +178,8 @@ def send_message(request):
 
 @login_required
 def view_messages(request):
-    inbox_messages = ChatMessage.objects.filter(receiver=request.user).order_by('published_at').reverse()[:4]
-    sent_messages = ChatMessage.objects.filter(sender=request.user).order_by('published_at').reverse()[:4]
+    inbox_messages = ChatMessage.objects.filter(receiver=request.user).order_by('published_at').reverse()[:20]
+    sent_messages = ChatMessage.objects.filter(sender=request.user).order_by('published_at').reverse()[:20]
     try:
         student = Student.objects.get(user=request.user)
         return render(request, 'course/inbox.html', {'inbox_messages': inbox_messages, 'sent_messages':sent_messages})
