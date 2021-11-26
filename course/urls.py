@@ -16,6 +16,7 @@ urlpatterns = [
 
     url(r'^(?P<course_id>[0-9]+)/view_assignments/$', views.view_assignments, name='view_assignments'),
     url(r'^(?P<course_id>[0-9]+)/view_resources/$', views.view_resources, name='view_resources'),
+    url(r'^(?P<course_id>[0-9]+)/view_grades/$', views.view_grades, name='view_grades'),
     path('send_message/',views.send_message,name='send_message'),
     path('view_messages/',views.view_messages,name='view_messages'),
     path('dashboard',views.dashboard,name='dashboard'),

@@ -38,6 +38,7 @@ class Assignment(models.Model):
     post_time = models.TimeField( auto_now_add=False)
     deadline = models.DateTimeField(blank = True, null= True)
     closed = models.BooleanField(default=False)
+    weightage = models.IntegerField(default = 0)
 
 
 

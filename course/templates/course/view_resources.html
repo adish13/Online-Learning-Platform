@@ -30,6 +30,7 @@
         <div class="col-sm-7" style="position:fixed-righ; overflow-y: scroll; height:650px;border: 3px solid #66cdaa;background-color:#e3f0e8;color:black;font-family: 'Abhaya Libre';font-size:16px;">
         <h3 align="center"; style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892">Resources</h3>
 
+        {% if resources %}
     {% for resource in resources reversed %}
             <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
         {{ resource.title }} -
@@ -49,6 +50,12 @@
 
             </div>
     {% endfor %}
+    
+    {% else%}
+    <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
+        No Resources given so far.
+    </div>
+    {% endif %}
 
         </div>
 </div>

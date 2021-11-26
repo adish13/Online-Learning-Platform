@@ -249,3 +249,42 @@ def join_course(request):
     else:
         form = JoinCourseForm()
         return render(request , 'course/join_course.html',{'form': form})
+
+#dashboard
+@login_required
+def dashboard(request):
+    user = request.user 
+    student = Student.objects.get(user=request.user)
+    courses = student.course_list.all()
+    return render(request,'course/dashboard.html',{'user':user, 'student':student, 'courses':courses})
+
+
+#register custom filter for looking up marks from dictionary
+@register.filter
+def get_marks(dictionary, key):
+    return dictionary.get(key)
+@register.filter
+def get_total(dictionary, key):
+    return dictionary.get(key)
+
+#view grades using this view
+def view_grades(request, course_id):
+    course = Course.objects.get(id=course_id)
+    assignments = Assignment.objects.filter(course=course)
+    marks_list = {}
+    total_list = {}
+    total_marks = 0
+    for a in assignments:
+        submission = Submission.objects.get(user = request.user, assignment =a)
+        feedback = Feedback.objects.filter(submission = submission)[0]
+        marks_list[a.id] = int(feedback.marks)
+        total_list[a.id] = int(feedback.marks*int(a.weightage)/100)
+        total_marks += total_list[a.id]
+    context = {
+        'course' : course,
+        'assignments' : assignments,
+        'marks_list' : marks_list,
+        'total_list': total_list,
+        'total_marks':total_marks
+    }
+    return render(request,'course/view_grades.html',context)
