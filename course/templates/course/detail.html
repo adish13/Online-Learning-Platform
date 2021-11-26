@@ -109,7 +109,7 @@
         {% else %}
         <div style="background-color:#CDD8CD; border-radius:2%;padding:3px; margin:5px">
         <div style="font-size:13px;">DUE AT {{ assignment.deadline }}</div>
-        <b>{{ assignment.name }} </b><br>
+        <a href="{% url 'course:view_assignments' course.id %}"><b>{{ assignment.name }} </b></a><br>
         <b>Assignment to be completed </b><br>
         </div>
         {% endif %}
@@ -127,7 +127,7 @@
         {% else %}
         <div style="background-color:#CDD8CD; border-radius:2%;padding:3px; margin:5px">
         <div style="font-size:13px;">{{ resource.post_time }}</div>
-        <b> {{ resource.title }} </b><br>
+        <a href="{% url 'course:view_resources' course.id %}"><b> {{ resource.title }} </b></a><br>
         <b>Resource to be completed </b><br>
         </div>
         {% endif %}
