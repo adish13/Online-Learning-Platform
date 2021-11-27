@@ -17,9 +17,11 @@
 <div>
 <center>
 <br><br><br><br><br><br><br><br><br><br><br><br>
-<h2 style="color: white;"> Are you registering as a Student or Instructor? </h2> <br>
-<a href="{% url 'register_instructor' %}"> <button type="button" class="btn btn-primary"> Instructor </button> </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
-<a href="{% url 'register_user' %}"> <button type="button" class="btn btn-primary"> Student </button> </a>
+<h2 style="color: white;"> Are you registering as a Student,Instructor or a TA? </h2> <br>
+<a href="{% url 'register_instructor' %}"> <button type="button" class="btn btn-primary"> Instructor </button> </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+<a href="{% url 'register_user' %}"> <button type="button" class="btn btn-primary"> Student </button> </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  
+<a href="{% url 'register_TA' %}"> <button type="button" class="btn btn-primary"> TA </button> </a> 
+
 </center>
 </div>
 {% endblock %}

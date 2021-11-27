@@ -9,6 +9,7 @@ import datetime
 import mimetypes
 from django.utils import timezone
 from django.template.defaulttags import register
+from TA.models import TeachingAssistant
 
 #register custom filter for looking up from dictionary
 @register.filter
@@ -188,9 +189,13 @@ def send_message(request):
         form = ChatMessageForm()
     try:
         student = Student.objects.get(user=request.user)
-        return render(request, 'course/chat.html',{'form':form})
+        return render(request,'course/chat.html',{'form':form})
     except:
-        return render(request, 'instructor/chat.html', {'form':form})
+        try:
+            ta = TeachingAssistant.objects.get(user=request.user)
+            return render(request,'TA/chat.html',{'form':form})
+        except:
+            return render(request, 'instructor/chat.html',{'form':form})
 
 @login_required
 def view_messages(request):
@@ -200,7 +205,11 @@ def view_messages(request):
         student = Student.objects.get(user=request.user)
         return render(request, 'course/inbox.html', {'inbox_messages': inbox_messages, 'sent_messages':sent_messages})
     except:
-        return render(request, 'instructor/inbox.html', {'inbox_messages': inbox_messages, 'sent_messages':sent_messages})
+        try:
+            ta = TeachingAssistant.objects.get(user=request.user)
+            return render(request,'TA/inbox.html', {'inbox_messages': inbox_messages, 'sent_messages':sent_messages})
+        except:
+            return render(request, 'instructor/inbox.html', {'inbox_messages': inbox_messages, 'sent_messages':sent_messages})
 
 @login_required
 def dashboard(request):

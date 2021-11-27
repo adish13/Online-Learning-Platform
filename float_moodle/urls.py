@@ -25,7 +25,9 @@ urlpatterns = [
     url(r'^instructor/', include(('instructor.urls', 'instructor'), namespace='instructor')),
     url(r'^create_course/$', views.add_course, name='create_course'),
     path('',include('course.urls')),
-    path('',include('instructor.urls')),    
+    path('',include('instructor.urls')), 
+    path('',include('TA.urls')),
+
 ]
 
 if settings.DEBUG:

@@ -30,10 +30,31 @@
         <h3 align="center"; style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892">Assignments</h3>
     {% if assignments %}
         {% for assignment in assignments reversed %}
+<<<<<<< HEAD
     <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
         <h2 style="padding-left: 20px; padding-bottom: 5px; display: inline-block;"> {{assignment.name}} </h2>
         <div style="float: right; padding-top: 10px;">
             {% if assignment in progress.assignments.all %}
+=======
+<div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
+        <h2>{{assignment.name}}</h2><br>
+        <h6>Weightage : {{assignment.weightage}}</h4><br>
+        {{ assignment.description }}<br>
+        Last Updated at : {{ assignment.post_time }}<br>
+        Deadline: {{ assignment.deadline }}<br><br>
+        {% if assignment.closed %}
+        <h2>Assignment over-due</h2>
+        {% else %}
+        <a href="{{ assignment.file.url }}">
+        <button type="submit" class="btn btn-success">Download Assignment</button></a>
+        <a href="{% url 'course:upload_submission' assignment.id %}">
+        <button type="submit" class="btn btn-success">Upload Submission</button></a>
+        {% endif %}
+        <a href="{% url 'course:view_submissions' assignment.id %}">
+        <button type="submit" class="btn btn-success">View my submissions</button></a>
+        <br><br>
+        {% if assignment in progress.assignments.all %}
+>>>>>>> 19d1e4ceac076524c48a15829378da0539e18ce1
         <a href="{% url 'course:mark_as_done' course.id 0 assignment.id 1 %}">
             <button type="submit" class="btn btn-success">Done</button></a>
         {% else %}
