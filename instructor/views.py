@@ -1,6 +1,4 @@
 ## @brief Views for the instructor app.
-import os
-from wsgiref.util import FileWrapper
 from django.contrib.auth.decorators import login_required
 
 from TA.models import TeachingAssistant,TA_ship
@@ -12,11 +10,13 @@ from .forms import AssignmentForm, NotificationForm, ResourceForm, FeedbackForm,
 from .forms import AssignmentForm, NotificationForm, ResourceForm, FeedbackForm, StudentBulkUploadForm
 from course.forms import MessageForm
 import datetime,threading
-import mimetypes
 from float_moodle import settings
-from .functions import send_email,course_invite_text,TA_text
+from .functions import send_email,course_invite_text,TA_text,get_student_emails,course_resource_text
+from .functions import course_assignment_text
 from django.utils import timezone
 from django.template.defaulttags import register
+
+
 # view for the index page of the instructor.
 # This view is called by /instructor_index url.\n
 # It returns the instructor's homepage containing links to all the courses he teaches.
@@ -109,6 +109,7 @@ def add_notification(request, course_id):
 def add_assignment(request, course_id):
     form = AssignmentForm(request.POST or None, request.FILES or None)
     course = Course.objects.get(id=course_id)
+    instructor = Instructor.objects.get(user=request.user)
     if form.is_valid():
         assignment = form.save(commit=False)
         assignment.file = request.FILES['file']
@@ -119,10 +120,18 @@ def add_assignment(request, course_id):
         course.total +=1
         course.save()
         notification = Notification()
+        notification.link = "http://127.0.0.1:8000/course/"+course_id+"/view_assignments/"
         notification.content = "New Assignment Uploaded |" + " Due at "+ str(assignment.deadline)[:-9]
         notification.course = course
         notification.time = timezone.now()
         notification.save()
+
+        # email
+        message = course_assignment_text(course.name,notification.link,assignment.deadline)
+        subject ='Assignment added for ' + course.name
+        recipient_list = get_student_emails(course_id)
+        thread = threading.Thread(target=send_email,args=(subject, message, email_from, recipient_list, None,))
+        thread.start()
         return redirect('instructor:instructor_detail', course.id)
 
     return render(request, 'instructor/create_assignment.html', {'form': form, 'course': course})
@@ -147,10 +156,18 @@ def add_resource(request, course_id):
         course.total +=1
         course.save()
         notification = Notification()
+        notification.link = "http://127.0.0.1:8000/course/"+course_id+"/view_resources/"
         notification.content = "New Resource Added - " + resource.title
         notification.course = course
         notification.time = timezone.now()
         notification.save()
+
+        # email
+        message = course_resource_text(course.name,notification.link)
+        subject = 'Resource added for ' + course.name
+        recipient_list = get_student_emails(course_id)
+        thread = threading.Thread(target=send_email,args=(subject, message, email_from, recipient_list, None,))
+        thread.start()
         return redirect('instructor:instructor_detail', course.id)
 
     return render(request, 'instructor/add_resource.html', {'form': form, 'course': course})
@@ -254,7 +271,7 @@ def add_TA(request,course_id):
         enroll.can_add_resources = form.cleaned_data.get('can_add_resources') 
         enroll.can_notify = form.cleaned_data.get('can_notify')
         enroll.save()
-        email_list = TA.user.email
+        email_list = [TA.user.email]
         print(email_list)
         message = TA_text(course.name)    
         subject = 'TAship for course ' + course.name
@@ -297,6 +314,7 @@ def add_grades(request, assignment_id):
                 feedback.save()
             
             notification = Notification()
+            notification.link = "http://127.0.0.1:8000/course/"+course.id+"/view_feedback/"
             notification.content = "Feedback added - " + str(assignment.name)
             notification.course = course
             notification.time = timezone.now()
@@ -350,13 +368,3 @@ def mark_as_done(request, course_id, id, done):
         progress.assignments.remove(assignment)
     progress.save()
     return redirect('view_all_assignments', course_id)
-
-def get_all_students(request,course_id):
-    memberships = Membership.objects.filter(course=course_id)
-    course = Course.objects.get(id=course_id)
-    student_list = []
-    for membership in memberships:
-        student_list.append(membership.student)
-    print(memberships)
-    print(student_list)
-    return render(request, 'TA/access_denied.html')
