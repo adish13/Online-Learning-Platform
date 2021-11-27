@@ -27,32 +27,55 @@
 
 
 
-        <div class="col-sm-7" style="align:center; overflow-y: scroll; height:650px;border: 3px solid #66cdaa;background-color:#e3f0e8;color:black;font-family: 'Abhaya Libre';font-size:16px;">
+        <div class="col-sm-7" style="align:center; overflow-y: scroll;border: 3px solid #66cdaa;background-color:#e3f0e8;color:black;font-family: 'Abhaya Libre';font-size:16px;">
         <h3 align="center"; style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892">Grades</h3>
-        <h2>Assignment Name</h2>
-        <h2>Contribution</h2>
-        <h2>Marks Obtained</h2>
-        <h2>Range</h2>
-        <h2>Total</h2><br>
-    {% if assignments %}
+        
+        <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th>Assignments</th>
+                <th>Calculated weight</th>
+                <th>Obtained Grade</th>
+                <th>Range</th>
+                <th>Weighted Percentage</th>
+                <th>Feedback</th>
+        
+            </tr>
+        </thead>
+
+        <tbody>
+    
+        {% if assignments %}  
         {% for assignment in assignments reversed %}
-<div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
-        <h2>{{assignment.name}}</h2>
-        <h2>{{assignment.weightage}}%</h2>
-        <h2>{{marks_list|get_marks:assignment.id}}</h2>
-        <h2>0-100</h2>
-        <h2>{{total_list|get_total:assignment.id}}%</h2><br>
-            
-</div>
-    {% endfor %}
-    <h2>Course Total:</h2>
-        <h2>{{total_marks}}%</h2><br>
+            <tr>
+                <td>{{assignment.name}}</td>
+                <td>{{assignment.weightage}}%</td>
+                <td>{{marks_list|get_marks:assignment.id}} </td>
+                <td>0-100</td>
+                <td>{{total_list|get_total:assignment.id}}%</td>
+                <td>{{contents|get:assignment.id}}</td>
+            </tr>
+        {% endfor %}
+    
+        
+        <td>Course Total:</td>
+        <td> </td>
+        <td>{{course_total}}</td>
+        <td> </td>
+        <td>{{total_marks}}</td><br>
+        <td></td>
+
     {% else%}
     <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
         No Assignments made so far.
     </div>
     {% endif %}
-        </div><br><br><br>
+        
+    </tbody>
+  </table>
+       
+    
+  </div><br><br><br>
 </div>
 </div><br><br><br>
 {% endblock %}

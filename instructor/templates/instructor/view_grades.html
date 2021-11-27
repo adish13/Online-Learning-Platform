@@ -29,14 +29,35 @@
         <div class="col-sm-6">
 
 
-                <div class="panel-body"style="background-color:#e3f0e8;color:black;border: 3px solid #66cdaa;font-family: 'Abhaya Libre';font-size:16px;">
-                    <h3 align="center"; style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892">Grades - Assignment {{assignment.name}}</h3>
-                    {% if error_message %}
+            <div class="panel-body"style="background-color:#e3f0e8;color:black;border: 3px solid #66cdaa;font-family: 'Abhaya Libre';font-size:16px;">
+                <h3 align="center"; style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892">Grades - Assignment {{assignment.name}}</h3>
+                <br>
+                <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Obtained Grade</th>
+                        <th>Range</th>
+                        <th>Feedback</th>
+                    </tr>
+                </thead>
+
+                {% if error_message %}
                         <p><strong>{{ error_message }}</strong></p>
-                    {% endif %}
-                    {% for student in students %}
-                    {{student.name}} {{marks|get:student.id}} {{contents|get:student.id}}
-                    {% endfor %}
+                {% endif %}
+
+                <tbody>
+              
+                {% for student in students reversed %}
+                    <tr>
+                        <td>{{student.name}}</td>
+                        <td>{{marks|get:student.id}}</td>
+                        <td>0-100</td>
+                        <td>{{contents|get:student.id}}</td>
+                    </tr>
+                {% endfor %}    
+                    
+                    
                 </div>
             </div>
 
@@ -46,5 +67,9 @@
 
 </div>
 
-
+<div class="col-sm-2">
+    <a href="{% url 'instructor:download_file' filename='grading_stats.pdf' %}">
+        <button type="submit" class="btn btn-success"style="font-size: larger; margin-left:-60px"> Download Statistics </button>
+    </a>
+</div>
 {% endblock %}
