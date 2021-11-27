@@ -299,6 +299,7 @@ def view_grades(request, course_id):
     contents = {}
     total_marks = 0
     course_total =0
+    students = Student.objects.filter(course_list__id = course_id)
     try:
         for a in assignments:
             submission = Submission.objects.get(user = request.user, assignment =a)
@@ -309,6 +310,18 @@ def view_grades(request, course_id):
             course_total += marks_list[a.id]
             contents[a.id] = str(feedback.content)
 
+        total_marks_list=[]
+        for s in students:
+            ag=0
+            for a in assignments:
+                submission = Submission.objects.get(user = request.user, assignment =a)
+                feedback = Feedback.objects.filter(submission = submission)[0]
+                ag+=float(feedback.marks*(a.weightage)/100)
+            total_marks_list.append(ag)
+        average = sum(total_marks_list)/len(total_marks_list)
+        lagging_behind = False
+        if total_marks<average:
+            lagging_behind = True
         context = {
             'course' : course,
             'assignments' : assignments,
@@ -317,6 +330,8 @@ def view_grades(request, course_id):
             'total_marks':total_marks,
             'course_total':course_total,
             'contents':contents,
+            'average':average,
+            'lagging_behind':lagging_behind,
         }
         return render(request,'course/view_grades.html',context)
     except:

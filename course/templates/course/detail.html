@@ -26,60 +26,57 @@
         <div class="col-sm-9"style="color:white;">
             <div class="row">
                 <div class="col-sm-1"></div>
-            <div class="col-sm-4">
-                <a href="{% url 'course:view_assignments' course.id %}">
-                    <button type="submit" class="btn btn-success"style="font-size: larger;padding-left: 20px;margin-left:0px">Assignments</button>
-                </a>
+                <div class="col-sm-4">
+                    <a href="{% url 'course:view_assignments' course.id %}">
+                        <button type="submit" class="btn btn-success"style="font-size: larger;padding-left: 20px;margin-left:0px; padding-right: 20px">Assignments</button>
+                    </a>
+                </div>
+                <div class="col-sm-4">
+                    <a href="{% url 'course:view_resources' course.id %}">
+                        <button type="submit" class="btn btn-success"style="font-size: larger; padding-left: 20px ;margin-left:0px; padding-right: 20px">Resources</button>
+                    </a>
+                </div>
+                <div class="col-sm-3">
+                    <a href="{% url 'course:view_grades' course.id %}">
+                        <button type="submit" class="btn btn-success"style="font-size: larger;padding-left: 20px;margin-left:0px; padding-right: 20px">Grades</button>
+                    </a>
+                </div>
             </div>
-            <div class="col-sm-4">
-                <a href="{% url 'course:view_resources' course.id %}">
-                    <button type="submit" class="btn btn-success"style="font-size: larger; padding-left: 20px ;margin-left:0px">Resources</button>
-                </a>
-            </div>
-            <div class="col-sm-3">
-                <a href="{% url 'course:view_grades' course.id %}">
-                    <button type="submit" class="btn btn-success"style="font-size: larger;padding-left: 20px;margin-left:0px">Grades</button>
-                </a>
-            </div>
-        </div>
-        <div class="row">
-            <br>
-            <div class="col-sm-4" style=" position:fixed-right;overflow-y: scroll; height:600px;border: 3px solid #66cdaa;background-color:#e3f0e8;color:black;font-family: 'Abhaya Libre';font-size:16px; width: 715px;">
-                <h1 style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892"> Forum </h1> <br>
-                {% if disabled_forum %}
-                <div>
-                    <h2 style="text-align:left;font-family:Volkhov,cursive;font-size:30px;color: #728892"> Forum Closed </h2>
-                    </div>
-                {% else %}
-                <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {% for field in form %}
-                    <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <span class="text-danger small">{{ field.errors }}</span>
+            <div class="row">
+                <br>
+                <div class="col-sm-4" style=" position:fixed-right;overflow-y: scroll; height:600px;border: 3px solid #66cdaa;background-color:#e3f0e8;color:black;font-family: 'Abhaya Libre';font-size:16px; width: 615px;">
+                    <h1 style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892"> Forum </h1> <br>
+                    {% if disabled_forum %}
+                        <h1 style="text-align: center; color: red;"> Forum Closed </h1>
+                    {% else %}
+                    <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% for field in form %}
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <span class="text-danger small">{{ field.errors }}</span>
+                            </div>
+                            <div class="col-sm-10" style="color: black; padding-left: 20px;"> {{ field }} <br> <br>
+                                <button type="submit" style="margin-left:250px" class="btn btn-success btn-lg">Send</button>
+                            </div>
                         </div>
-                        <div class="col-sm-10" style="color: black; padding-left: 20px;"> {{ field }} <br> <br>
-                            <button type="submit" style="margin-left:250px" class="btn btn-success btn-lg">Send</button>
-                        </div>
+                        {% endfor %}
+                    </form>
+                    {% for message in messages reversed %}
+                    <br>
+                    <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
+                        <b> {{ message.sender }} </b> <br>
+                        <div style="font-size:12px;"> {{ message.time }} </div>
+                        {{ message.content }} <br>
                     </div>
                     {% endfor %}
-                </form>
-                {% for message in messages reversed %}
-                <br>
-                <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
-                    <b> {{ message.sender }} </b> <br>
-                    <div style="font-size:12px;"> {{ message.time }} </div>
-                    {{ message.content }} <br>
+                    {% endif %}
                 </div>
-                {% endfor %}
-                {% endif %}
-            </div>
-            <div class="col-sm-4" style=" position:fixed-right;overflow-y: scroll; height:600px;border: 3px solid #66cdaa;background-color:#e3f0e8;color:black;font-family: 'Abhaya Libre';font-size:16px; width: 400px; padding-left: 10px; margin-left: 30px;">
-                <h3 align="center"style="position:fixed-right; top:2%; right:2%; font-family:Volkhov,cursive;font-size:30px;color: #728892">Timeline</h3>
-                <div class="col-sm-10" style="font-family: 'Alfa Slab One';font-size:12px;"></div>
-                
-                <h3 style="position:fixed-right; top:2%; right:2%; font-family:Volkhov,cursive;font-size:30px;color: #728892">Assignments</h3>
-                {% if assignments %}
+                <div class="col-sm-4" style=" position:fixed-right;overflow-y: scroll; height:600px;border: 3px solid #66cdaa;background-color:#e3f0e8;color:black;font-family: 'Abhaya Libre';font-size:16px; width: 400px; padding-left: 10px; margin-left: 30px;">
+                    <h3 align="center"style="position:fixed-right; top:2%; right:2%; font-family:Volkhov,cursive;font-size:30px;color: #728892">Timeline</h3>
+                    <div class="col-sm-10" style="font-family: 'Alfa Slab One';font-size:12px;"></div>
+                    {% if assignments %}
+                    <h2>Assignments</h2>
                     {% for assignment in assignments %}
                         {% if assignment in finished_assignments.all %}
                         {% else %}
@@ -90,14 +87,12 @@
                         </div>
                         {% endif %}
                     {% endfor %}
-                {% else %}
-                <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
-                    No Assignments made so far.
-                </div>
-                {% endif %}
-                <h3 style="position:fixed-right; top:2%; right:2%; font-family:Volkhov,cursive;font-size:30px;color: #728892">Resources</h3>
-                {% if resources %}
-                    {% for resource in resources %}
+                    {% else %}
+                    <h3 style="padding-top: 10px;"> All assignments done </h3>
+                    {% endif %}
+                    {% if resources %}
+                        <h2>Resources</h2>
+                        {% for resource in resources %}
                         {% if resource in finished_resources.all %}
                         {% else %}
                         <div style="background-color:#CDD8CD; border-radius:2%;padding:3px; margin:5px">
@@ -106,18 +101,15 @@
                             <b>Resource to be completed </b><br>
                         </div>
                         {% endif %}
-                    {% endfor %}
-                {% else %}
-                
-    <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
-        No Resources given so far.
-    </div>
-                {% endif %}
+                        {% endfor %}
+                    {% else %}
+                    <h3>All resources done</h3>
+                    {% endif %}
+                </div>
             </div>
-        </div>
-{% else %}
-    You are not enrolled in this course
-{% endif %}
+                {% else %}
+                    You are not enrolled in this course
+                {% endif %}
     </div><br><br><br>
 </div><br><br><br>
 

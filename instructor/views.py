@@ -22,6 +22,7 @@ import numpy as np
 from matplotlib import colors
 from matplotlib.ticker import PercentFormatter
 from django.core.files.base import ContentFile, File
+from io import StringIO, BytesIO
 
 # view for the index page of the instructor.
 # This view is called by /instructor_index url.\n
@@ -364,7 +365,7 @@ def grading_statistics(request, assignment_id):
         # ----------plot the image here and save it-------
         # Creating histogram
         fig, axs = plt.subplots(1, 1,
-                        figsize =(10, 7),
+                        figsize =(8, 4),
                         tight_layout = True)
         n_bins = [0,10,20,30,40,50,60,70,80,90,100]
 
@@ -402,6 +403,13 @@ def grading_statistics(request, assignment_id):
         with open('media/histogram.png','rb') as f:
             i.image.save('histogram.png', File(f))
         i.save()
+        imgdata = StringIO()
+        imgdata.truncate(0)
+        imgdata.seek(0)
+        plt.savefig(imgdata, format='svg')
+        imgdata.seek(0)
+        data = imgdata.getvalue()
+        plt.clf()
         #------------plot saved-------------
         context = {
             'course':course,
@@ -410,6 +418,7 @@ def grading_statistics(request, assignment_id):
             'average':average,
             'variance':variance,
             'i':i,
+            'data': data,
         }
         return render(request, 'instructor/grading_statistics.html',context)
     except:
@@ -429,3 +438,61 @@ def mark_as_done(request, course_id, id, done):
         progress.assignments.remove(assignment)
     progress.save()
     return redirect('view_all_assignments', course_id)
+
+
+# view for assignments statistics
+@login_required
+def all_assignment_stats(request, course_id):
+    course = Course.objects.get(id = course_id)
+    students = Student.objects.filter(course_list__id=course.id)
+    assignments = Assignment.objects.filter(course = course)
+    mean_list=[]
+    variance_list=[]
+    try:
+        for a in assignments:
+            marks_list=[]
+            for s in students:
+                submission = Submission.objects.filter(assignment = a, user = s.user)[0]
+                feedback = Feedback.objects.filter(submission=submission)[0]
+                marks_list.append(feedback.marks)
+
+            # calculate stats
+            average = (sum(marks_list) / len(marks_list))
+            variance = sum((i - average) ** 2 for i in marks_list) / len(marks_list)
+            variance = int(variance)
+            average = int(average)
+            mean_list.append(average)
+            variance_list.append(variance)
+        #plot graph
+        plt.plot(mean_list)
+        plt.plot(variance_list)
+         
+        plt.xlabel("Assignments")
+        plt.ylabel("Mean and Variance")
+        plt.title('Course Statistics - '+str(course.name))
+        plt.plot([], c='#D7191C', label='Variances')
+        plt.plot([], c='#2C7BB6', label='Means')
+        plt.legend()
+ 
+        # Save plot
+        plt.savefig('media/graph.png')
+
+        #Make ImageObject Instance
+        i = ImageObject()
+        with open('media/graph.png','rb') as f:
+            i.image.save('graph.png', File(f))
+        i.save()
+        imgdata = StringIO()
+        imgdata.truncate(0)
+        imgdata.seek(0)
+        plt.savefig(imgdata, format='svg')
+        imgdata.seek(0)
+        data = imgdata.getvalue()
+        plt.clf()
+
+        return render(request, 'instructor/all_assignment_stats.html',{'data':data,'course':course,'i':i})
+
+
+    
+    except:
+        return redirect('view_all_assignments',course.id)

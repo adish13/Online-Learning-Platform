@@ -4,10 +4,7 @@
 {% block body %}
 <br>
 <div class="container-fluid">
-
-
     <div class="row">
-
         <div class="col-sm-6 col-md-3">
             <div class="panel panel-default">
 
@@ -25,31 +22,34 @@
             </div>
         </div>
         <div class="col-sm-9"style="color:white;">
-            <div class="col-sm-2">
+            <div class="col-sm-1">
                 <a href="{% url 'instructor:instructor_detail' course.id %}">
                     <button type="submit" class="btn btn-success" style="font-size: larger; padding-left: 12px; margin-left:0px; margin-right:0px">Home</button>
                 </a>
             </div>
+            <div class="col-sm-1" style="margin-right: 20px;"></div>
         <div class="col-sm-2">
             <a href="{% url 'instructor:view_all_assignments' course.id %}">
-                <button type="submit" class="btn btn-success"style="font-size: larger; margin-left:-60px">Submissions</button>
+                <button type="submit" class="btn btn-success"style="font-size: larger; margin-left:0px">Submissions</button>
             </a>
         </div>
+        <div class="col-sm-1"></div>
         <div class="col-sm-2">
             <a href="{% url 'instructor:add_resource' course.id %}">
-                <button type="submit" class="btn btn-success"style="font-size: larger; margin-left:-45px">Add a resource</button>
+                <button type="submit" class="btn btn-success"style="font-size: larger; margin-left:0px">Add a resource</button>
             </a>
         </div>
+        <div class="col-sm-1" style="margin-right: 30px;"></div>
         <div class="col-sm-2">
             <a href="{% url 'instructor:add_notification' course.id %}">
-                <button type="submit" class="btn btn-success"style="font-size: larger; margin-left:5px">Notify Students</button>
+                <button type="submit" class="btn btn-success"style="font-size: larger; margin-left:0px">Notify Students</button>
             </a>
         </div>
         </div>
         <br><br><br>
         <div class="col-sm-6">
-                <div class="panel-body"style="background-color:#e3f0e8;color:black;border: 3px solid #66cdaa;font-family: 'Abhaya Libre';font-size:16px;">
-                    <h3 align="center"; style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892">Add Assignment</h3>
+            <div class="panel-body"style="background-color:#e3f0e8;color:black;border: 3px solid #66cdaa;font-family: 'Abhaya Libre';font-size:16px; margin-left: 70px; width: 800px">
+                <h3 align="center"; style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892">Add Assignment</h3>
                     {% if error_message %}
                         <p><strong>{{ error_message }}</strong></p>
                     {% endif %}
@@ -61,14 +61,14 @@
             <div class="col-sm-offset-2 col-sm-10">
                 <span class="text-danger small">{{ field.errors }}</span>
             </div>
-        <label class="control-label col-sm-5">{{ field.label_tag }}</label>
-        <div class="col-sm-5">{{ field }}</div>
+        <label class="control-label col-sm-5"> <h3 style="padding-bottom: -100px;"> {{ field.label_tag }} </h3></label>
+        <div class="col-sm-5" style="padding-top: 25px;">{{ field }}</div>
         </div>
         {% endfor %}
 
         <div class="form-group">
-            <div class="col-sm-offset-4 col-sm-10">
-                <button type="submit" class="btn btn-success">Submit</button>
+            <div class="col-sm-offset-4 col-sm-10" style="margin-left: 325px; padding-top: 10px;">
+                <button type="submit" class="btn btn-success btn-lg">Submit</button>
             </div>
         </div>
     </form>

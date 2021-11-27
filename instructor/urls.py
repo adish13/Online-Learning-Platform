@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^(?P<course_id>[0-9]+)/view_all_assignments/$', views.view_all_assignments, name='view_all_assignments'),
     url(r'^(?P<assignment_id>[0-9]+)/view_all_submissions/$', views.view_all_submissions, name='view_all_submissions'),
     url(r'^(?P<course_id>[0-9]+)/instructor_detail/disable_forum/$', views.disable_forum, name='disable_forum'),
+    url(r'^(?P<course_id>[0-9]+)/all_assignment_stats/$', views.all_assignment_stats, name='all_assignment_stats'),
     url(r'^(?P<course_id>[0-9]+)/instructor_detail/enable_forum/$', views.enable_forum, name='enable_forum'),
     url(r'^(?P<course_id>[0-9]+)/instructor_detail/send_invite/$', views.send_invite, name='send_invite'),
     url(r'^(?P<course_id>[0-9]+)/instructor_detail/add_TA/$', views.add_TA, name='add_TA'),

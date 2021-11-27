@@ -9,9 +9,9 @@
                 <div class="imessage" style="background-color: #e3f0e8;">
                 {% for message in inbox_messages %}
                 <article class="post" style="border-bottom: 1px solid black;">
-                    <h5 style="text-align: center;">{{message.published_at}}</h5>
+                    <h4 style="text-align: center;">{{message.published_at}}</h4>
                     <h2 style="padding-left: 10px; padding-bottom: 5px;"><a href="" style="color: black;">{{ message.sender }}</a></h2>
-                    <p class="from-them"> {{ message.msg_content|linebreaksbr }} </p> <br>
+                    <p class="from-them" style="font-size: 20px;"> {{ message.msg_content|linebreaksbr }} </p> <br>
                 </article>
                 {% endfor %}
                 </div>
@@ -23,17 +23,17 @@
                 <div class="imessage" style="background-color: #e3f0e8;">
                 {% for message in sent_messages %}
                 <article class="post" style="border-bottom: 1px solid black;">
-                    <h5 style="text-align: center;">{{message.published_at}}</h5>
+                    <h4 style="text-align: center;">{{message.published_at}}</h4>
                     <h2 style="text-align: right; padding-right: 15px"><a href="" style="color: black;">{{ message.receiver }}</a></h2>
-                    <p class="from-me" style="color: white;"> {{ message.msg_content|linebreaksbr }} </p> <br> <br>
-                    <div style="text-align: center;"> <a href="{% url 'delete' message.id %}"> <button type="button" class="btn btn-danger">Delete</button> </a> </div> <br>
+                    <p class="from-me" style="color: white; font-size: 20px;"> {{ message.msg_content|linebreaksbr }} </p> <br> <br>
+                    <div style="margin-left: 260px; margin-top: 20px;"> <a href="{% url 'delete' message.id %}"> <button type="button" class="btn btn-danger">Delete</button> </a> </div> <br>
                 </article>
                 {% endfor %}
                 </div>
             </div>
         </div>
     </div> <br>
-    <article style="text-align: center;">
+    <article style="margin-left: 465px;">
         <a href="{%url 'send_message' %}"> <button type="button" class="btn btn-primary btn-lg"> Send a Message </button> </a> <br> <br> 
     </article>
 </div>

@@ -33,6 +33,9 @@ class FeedbackForm(forms.ModelForm):
 
 class SendInviteForm(forms.Form):
     email_list = forms.CharField(widget=forms.Textarea)
+    def __init__(self, *args, **kwargs):
+        super(SendInviteForm, self).__init__(*args, **kwargs) # Call to ModelForm constructor
+        self.fields['email_list'].widget.attrs['style'] = 'width:550px; height: 105px'
 
 class StudentBulkUploadForm(forms.ModelForm):
     class Meta:

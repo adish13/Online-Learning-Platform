@@ -65,6 +65,12 @@
         <td>{{total_marks}}</td><br>
         <td></td>
 
+        <h1>Class Average for Course {{course.name}}: {{average}}</h1>
+        {% if lagging_behind %}
+        <h2>You are falling behind class average you need to cover up</h2>
+        {% else %}
+        <h2>You are doing good</h2>
+        {%endif%}
     {% else%}
     <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
         No Assignments made so far.
