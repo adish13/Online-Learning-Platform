@@ -6,11 +6,13 @@ from instructor.models import Assignment, Course, Feedback, Instructor,Submissio
 from django.shortcuts import render, redirect
 from .forms import MessageForm, SubmissionForm, ChatMessageForm,JoinCourseForm
 import datetime
-import mimetypes
+import threading
 from django.utils import timezone
 from django.template.defaulttags import register
 from TA.models import TeachingAssistant
+from instructor.functions import send_email
 
+email_from = "shah.adish13@gmail.com"
 #register custom filter for looking up from dictionary
 @register.filter
 def get_progress(dictionary, key):
@@ -152,6 +154,14 @@ def upload_submission(request, assignment_id):
         submission.assignment = assignment
         submission.time_submitted = datetime.datetime.now().strftime('%H:%M, %d/%m/%y')
         submission.save()
+
+        # link = 
+        # email
+        message = "You have submitted your assignment for " + assignment.name + "of the course" + course.code
+        subject = 'Assignment submitted' + assignment.name
+        recipient_list = [request.user.email]
+        thread = threading.Thread(target=send_email,args=(subject, message,email_from, recipient_list, None,))
+        thread.start()
         return view_assignments(request, course_id)
 
     return render(request, 'course/upload_submission.html', {'form': form,'course': course})
@@ -250,6 +260,7 @@ def mark_as_done(request, course_id, is_it_res, id, done):
             progress.assignments.remove(assignment)
         progress.save()
         return redirect('view_assignments', course_id)
+
 @login_required
 def join_course(request):
     if request.method == 'POST':
@@ -259,12 +270,11 @@ def join_course(request):
             if Course.objects.filter(course_access_code = form.cleaned_data.get('course_access_code')):
                 course = Course.objects.filter(course_access_code = form.cleaned_data.get('course_access_code')).first()
                 enroll = Membership(student=student , course = course)
-
-                if(course.TA_code == form.cleaned_data.get('TA_code')):
-                    enroll.isTA = True
-                    enroll.save()
-                else:
-                    enroll.save()
+                enroll.save()
+                progress=Progress()
+                progress.student=student
+                progress.course = course
+                progress.save()  
                 print('Added to course successfully')
             else:
                 print('No course exists with access code: ', form.cleaned_data.get('access_code'))
@@ -332,6 +342,30 @@ def view_grades(request, course_id):
             'contents':contents,
             'average':average,
             'lagging_behind':lagging_behind,
+        }
+        return render(request,'course/view_grades.html',context)
+    except:
+        return redirect('course:detail', course_id)
+
+def view_progress(request, course_id):
+    course = Course.objects.get(id=course_id)
+    assignments = Assignment.objects.filter(course=course)
+    marks_list = {}
+    total_list = {}
+    total_marks = 0
+    try:
+        for a in assignments:
+            submission = Submission.objects.get(user = request.user, assignment =a)
+            feedback = Feedback.objects.filter(submission = submission)[0]
+            marks_list[a.id] = int(feedback.marks)
+            total_list[a.id] = int(feedback.marks*int(a.weightage)/100)
+            total_marks += total_list[a.id]
+        context = {
+            'course' : course,
+            'assignments' : assignments,
+            'marks_list' : marks_list,
+            'total_list': total_list,
+            'total_marks':total_marks
         }
         return render(request,'course/view_grades.html',context)
     except:
