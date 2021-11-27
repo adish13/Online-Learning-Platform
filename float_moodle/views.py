@@ -2,10 +2,12 @@
 
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from .forms import UserRegistration, StudentRegistration, InstructorForm,CreateCourse,TAform
+
+from instructor.views import instructor_detail
+from .forms import UserRegistration, StudentRegistration, InstructorForm,CreateCourse#,TAform
 from course.models import Progress, Student, User
 from django.contrib.auth.forms import PasswordResetForm
-from instructor.models import Instructor
+from instructor.models import Instructor, ProgressInstructor
 from django.db.models.query_utils import Q
 from django.core.mail import BadHeaderError
 from django.http import HttpResponse
@@ -140,6 +142,12 @@ def add_course(request):
         course = course_form.save(commit=False)
         course.instructor = Instructor.objects.get(user=request.user)
         course.save()
+        #add progress for new course for instructor
+        instructor = Instructor.objects.get(user = request.user)
+        p = ProgressInstructor()
+        p.course = course
+        p.instructor=instructor
+        p.save()
         return redirect('instructor:instructor_index')
         
     return render(request, 'create_course.html', {'course_form': course_form})

@@ -59,7 +59,15 @@
     <a href="{% url 'instructor:add_grades' assignment.id %}">
         <button type="submit" class="btn btn-success">Add Grades</button>
     </a>
-    </a><br>
+    </a><br><br>
+    {% if assignment in progress.assignments.all %}
+    <a href="{% url 'instructor:mark_as_done' course.id assignment.id 1 %}">
+        <button type="submit" class="btn btn-success">Done</button></a>
+    {% else %}
+    <a href="{% url 'instructor:mark_as_done' course.id assignment.id 0 %}">
+        <button type="submit" class="btn btn-success">Mark as Done</button></a>
+    {% endif %}
+    <br>
             </div>
     {% endfor %}
     {% else %}

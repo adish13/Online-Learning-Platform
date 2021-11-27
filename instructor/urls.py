@@ -19,7 +19,8 @@ urlpatterns = [
     url(r'^(?P<course_id>[0-9]+)/instructor_detail/add_TA/$', views.add_TA, name='add_TA'),
     # url(r'^download/(?P<file_name>.+)$', views.download,name='download_submission'),
     url(r'^(?P<submission_id>[0-9]+)/give_feedback/$', views.give_feedback, name='give_feedback'),
-    url(r'^(?P<assignment_id>[0-9]+)/add_grades/$', views.add_grades, name='add_grades')
+    url(r'^(?P<assignment_id>[0-9]+)/add_grades/$', views.add_grades, name='add_grades'),
+    url(r'^(?P<course_id>[0-9]+)/(?P<id>[0-9]+)/(?P<done>\d)/mark_as_done/$', views.mark_as_done, name='mark_as_done'),
     
     # url(r'^(?P<assignment_id>[0-9]+)/view_feedback/$', views.view_feedback, name='view_feedback'),
 ]

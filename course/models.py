@@ -47,6 +47,7 @@ class Resources(models.Model):
     file_resource = models.FileField(default='')
     title = models.CharField(max_length=100)
     course = models.ForeignKey(Course, default=1, on_delete=models.CASCADE)
+    post_time = models.DateTimeField(blank = True, null= True)
 
 # This class represents messaging between students
 class ChatMessage(models.Model):
