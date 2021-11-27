@@ -67,26 +67,25 @@
             <div> <h3 style="display: inline-block; padding-right: 30px; padding-left: 20px;">Deadline : </h3> <h3 style="display: inline-block;">{{ assignment.deadline }} </h3></div>
             <br>
             <div class="row">
-                <div class="col-sm-4"></div>
+                <div class="col-sm-2"></div>
                 <div class="col-sm-1">
                     <a href="{% url 'instructor:view_all_submissions' assignment.id %}">
                         <button type="submit" class="btn btn-info btn-lg">Submissions</button>
                     </a>
                 </div>
-                <div class="col-sm-1"></div>
+                <div class="col-sm-2"></div>
                 <din class="col-sm-1">
                     <a href="{% url 'instructor:add_grades' assignment.id %}">
                         <button type="submit" class="btn btn-info btn-lg">Add Grades</button>
                     </a>
                 </din>
 
+                <div class="col-sm-2"></div>
                 <din class="col-sm-1">
-
-                <div class="col-sm-1"></div>
-    <a href="{% url 'instructor:view_grades' assignment.id %}">
-        <button type="submit" class="btn btn-info btn-lg">View Grades</button>
-    </a>
-    </din>
+                <a href="{% url 'instructor:view_grades' assignment.id %}">
+                <button type="submit" class="btn btn-info btn-lg">View Grades</button>
+                </a>
+                </din>
             </div>
     <br>
             </div>

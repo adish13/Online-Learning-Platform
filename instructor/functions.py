@@ -22,7 +22,7 @@ def course_resource_text(course_name,link):
     return text
 
 def course_assignment_text(course_name,link,deadline):
-    text = "New Assignment added for course " + course_name + ".\n Deadline for the assignment is "+deadline+ ". \n You can view it at the following link "+link+"\n Sent by team BruteForces."
+    text = "New Assignment added for course " + course_name + ".\n Deadline for the assignment is "+str(deadline)+ ". \n You can view it at the following link "+link+"\n Sent by team BruteForces."
     return text
 
 def TA_text(course_name):
