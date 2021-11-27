@@ -1,6 +1,9 @@
 from django import forms
 from .models import Assignment,Submission,Feedback, StudentBulkUpload
 from course.models import Notification, Resources
+from django.db import models
+from django.contrib.auth.models import User
+from TA.models import TeachingAssistant
 
 # This class represents the form to add a notification.
 class NotificationForm(forms.ModelForm):
@@ -30,8 +33,15 @@ class FeedbackForm(forms.ModelForm):
 
 class SendInviteForm(forms.Form):
     email_list = forms.CharField(widget=forms.Textarea)
-    assistant_invite = forms.BooleanField(required=False)
+
 class StudentBulkUploadForm(forms.ModelForm):
     class Meta:
         model = StudentBulkUpload
         fields = ['csv_file']
+
+class AddTAForm(forms.Form):
+    username = forms.CharField(max_length=100)
+    can_add_students = forms.BooleanField(required=False)
+    can_add_assignments = forms.BooleanField(required=False)
+    can_add_resources = forms.BooleanField(required=False)
+    can_notify = forms.BooleanField(required=False)

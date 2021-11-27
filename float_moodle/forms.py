@@ -3,7 +3,8 @@
 from django import forms
 from django.contrib.auth.models import User
 from course.models import Student
-from instructor.models import Course, Instructor,TeachingAssistant
+from instructor.models import Course, Instructor
+from TA.models import TeachingAssistant
 
 # This class represents the form to register a user.
 class UserRegistration(forms.ModelForm):
@@ -32,7 +33,7 @@ class CreateCourse(forms.ModelForm):
         # fields = ['name', 'code','course_logo']
         fields = ['name', 'code','course_access_code','TA_code', 'course_logo']
 
-# class TAform(forms.ModelForm):
-#     class Meta:
-#         model = TeachingAssistant
-#         fields = ['name', 'information']
+class TAform(forms.ModelForm):
+    class Meta:
+        model = TeachingAssistant
+        fields = ['name', 'information']

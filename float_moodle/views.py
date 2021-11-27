@@ -7,7 +7,7 @@ from course.models import Progress, Student, User
 from django.contrib.auth.forms import PasswordResetForm
 from instructor.models import Instructor
 from django.db.models.query_utils import Q
-from django.core.mail import send_mail, BadHeaderError
+from django.core.mail import BadHeaderError
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
@@ -15,6 +15,9 @@ from django.db.models.query_utils import Q
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
+from TA.models import TeachingAssistant
+from instructor.functions import send_email,email_from
+import threading
 
 ## @brief view for the login page of the website.
 #
@@ -27,12 +30,15 @@ def login_user(request):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-
             try:
                 student = Student.objects.get(user=request.user)
                 return redirect('course:index')
             except:
-                return redirect('instructor:instructor_index')
+                try:
+                    ta = TeachingAssistant.objects.get(user=request.user)
+                    return redirect('TA:TA_index')
+                except:
+                    return redirect('instructor:instructor_index')
         else:
             return render(request, 'login.html', {'error_message': 'Invalid login credentials'})
     return render(request, 'login.html')
@@ -91,25 +97,30 @@ def register_instructor(request):
 
     return render(request,'register_instructor.html', {'user_form': user_form, 'instructor_form': instructor_form})
 
-# view for registration page of TA
+# view for the registration page for TAs to register themselves.
+# This view is called by /register_TA url.\n
+# It returns the form for TAs to register themselves.\n
+# The students can choose a usename and password and fill out their details.
+def register_TA(request):
+    user_form = UserRegistration(request.POST or None)
+    TA_form = TAform(request.POST or None)
 
-# def register_TA(request):
-#     user_form = UserRegistration(request.POST or None)
-#     TA_form = TAform(request.POST or None)
+    if user_form.is_valid() and TA_form.is_valid():
+        user = user_form.save(commit=False)
+        username = user_form.cleaned_data['username']
+        password = user_form.cleaned_data['password']
+        email = user_form.cleaned_data['email']
+        user.set_password(password)
+        user.save()
 
-#     if user_form.is_valid() and TA_form.is_valid():
-#         user = user_form.save(commit=False)
-#         username = user_form.cleaned_data['username']
-#         password = user_form.cleaned_data['password']
-#         user.set_password(password)
-#         user.save()
+        TA = TA_form.save(commit=False)
+        TA.user = User.objects.get(id=user.id)
+        TA.save()
+        # student_form.save_m2m() # saves the many to many field relation (between the course and student model) entered in the form while selecting the courses
+        #make progress model for each course      
+        return login_user(request)
 
-#         TA = TA_form.save(commit=False)
-#         TA.user = User.objects.get(id=user.id)
-#         TA.save()
-#         return login_user(request)
-
-#     return render(request,'register_TA.html', {'user_form': user_form, 'TA_form': TA_form})
+    return render(request,'register_TA.html', {'user_form': user_form, 'TA_form': TA_form})
 
 ## @brief view for the logout page.
 #
@@ -141,40 +152,27 @@ def password_reset_request(request):
             data = password_reset_form.cleaned_data['email']
             associated_users = User.objects.filter(Q(email=data))
             if associated_users.exists():
-                for user in associated_users:
-                    subject = "Password Reset Requested"
-                    email_template_name = "password_reset_email.txt"
-                    c = {
-                    "email":user.email,
-                    'domain':'127.0.0.1:8000',
-                    'site_name': 'Website',
-                    "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                    "user": user,
-                    'token': default_token_generator.make_token(user),
-                    'protocol': 'http',
-                    }
-                    email = render_to_string(email_template_name, c)
-                    try:
-                        send_mail(subject, email, 'admin@example.com' , [user.email], fail_silently=False)
-                    except BadHeaderError:
-                        return HttpResponse('Invalid header found.')
-                    return redirect ("/password_reset/done/")
+                user = associated_users.first()
+                recipient_list = [user.email]
+               
+                subject = "Password Reset Requested"
+                email_template_name = "password_reset_email.txt"
+                c = {
+                "email":user.email,
+                'domain':'127.0.0.1:8000',
+                'site_name': 'Website',
+                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                "user": user,
+                'token': default_token_generator.make_token(user),
+                'protocol': 'http',
+                }
+                email_text = render_to_string(email_template_name, c)
+                sender = email_from()
+                print(email_text)
+                print(sender)
+
+                thread = threading.Thread(target=send_email,args=(subject, email_text, sender, recipient_list, None,))
+                thread.start()
+                return redirect ("/password_reset/done/")
     password_reset_form = PasswordResetForm()
     return render(request=request, template_name="password_reset.html", context={"password_reset_form":password_reset_form})
-# def add_resource(request, course_id):
-#     form = ResourceForm(request.POST or None, request.FILES or None)
-#     instructor = Instructor.objects.get(user=request.user)
-#     course = Course.objects.get(id=course_id)
-#     if form.is_valid():
-#         resource = form.save(commit=False)
-#         resource.file_resource = request.FILES['file_resource']
-#         resource.course = course
-#         resource.save()
-#         notification = Notification()
-#         notification.content = "New Resource Added - " + resource.title
-#         notification.course = course
-#         notification.time = datetime.datetime.now().strftime('%H:%M, %d/%m/%y')
-#         notification.save()
-#         return redirect('instructor:instructor_detail', course.id)
-
-    return render(request, 'instructor/add_resource.html', {'form': form, 'course': course})

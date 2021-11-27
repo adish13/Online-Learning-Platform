@@ -33,6 +33,7 @@
         {% for assignment in assignments reversed %}
 <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
         <h2>{{assignment.name}}</h2><br>
+        <h6>Weightage : {{assignment.weightage}}</h4><br>
         {{ assignment.description }}<br>
         Last Updated at : {{ assignment.post_time }}<br>
         Deadline: {{ assignment.deadline }}<br><br>

@@ -28,4 +28,3 @@ class ChatMessageForm(forms.ModelForm):
 
 class JoinCourseForm(forms.Form):
     course_access_code = forms.CharField(max_length=100)
-    TA_code = forms.CharField(max_length=100, required=False)

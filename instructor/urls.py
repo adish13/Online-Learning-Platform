@@ -16,7 +16,7 @@ urlpatterns = [
     url(r'^(?P<course_id>[0-9]+)/instructor_detail/disable_forum/$', views.disable_forum, name='disable_forum'),
     url(r'^(?P<course_id>[0-9]+)/instructor_detail/enable_forum/$', views.enable_forum, name='enable_forum'),
     url(r'^(?P<course_id>[0-9]+)/instructor_detail/send_invite/$', views.send_invite, name='send_invite'),
-
+    url(r'^(?P<course_id>[0-9]+)/instructor_detail/add_TA/$', views.add_TA, name='add_TA'),
     # url(r'^download/(?P<file_name>.+)$', views.download,name='download_submission'),
     url(r'^(?P<submission_id>[0-9]+)/give_feedback/$', views.give_feedback, name='give_feedback'),
     url(r'^(?P<assignment_id>[0-9]+)/add_grades/$', views.add_grades, name='add_grades')
