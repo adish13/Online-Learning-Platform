@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from TA.models import TeachingAssistant,TA_ship
 from .models import Feedback, Instructor, Submission, Assignment
 from .models import Feedback, Instructor, Submission, Assignment,ProgressInstructor
-from course.models import Course, Message, Notification, Student
+from course.models import Course, Membership, Message, Notification, Student
 from django.shortcuts import render, HttpResponse, redirect
 from .forms import AssignmentForm, NotificationForm, ResourceForm, FeedbackForm, SendInviteForm,AddTAForm
 from .forms import AssignmentForm, NotificationForm, ResourceForm, FeedbackForm, StudentBulkUploadForm
@@ -320,3 +320,13 @@ def mark_as_done(request, course_id, id, done):
         progress.assignments.remove(assignment)
     progress.save()
     return redirect('view_all_assignments', course_id)
+
+def get_all_students(request,course_id):
+    memberships = Membership.objects.filter(course=course_id)
+    course = Course.objects.get(id=course_id)
+    student_list = []
+    for membership in memberships:
+        student_list.append(membership.student)
+    print(memberships)
+    print(student_list)
+    return render(request, 'TA/access_denied.html')
