@@ -16,7 +16,7 @@ import mimetypes
 from float_moodle import settings
 from .functions import send_email,course_invite_text,TA_text
 from django.utils import timezone
-
+from django.template.defaulttags import register
 # view for the index page of the instructor.
 # This view is called by /instructor_index url.\n
 # It returns the instructor's homepage containing links to all the courses he teaches.
@@ -227,6 +227,7 @@ def enable_forum(request, course_id=None):
     course_to_enable.save()
     return redirect('instructor_detail', course_id)
 
+@login_required
 def send_invite(request,course_id):
     form = SendInviteForm(request.POST or None)
     course = Course.objects.get(id=course_id)
@@ -305,6 +306,35 @@ def add_grades(request, assignment_id):
 
     except Exception as e:
         return redirect('add_grades', assignment_id)
+
+@register.filter
+def get(dictionary, key):
+    return dictionary.get(key)
+
+#view to view grading stats by teacher
+@login_required
+def view_grades(request, assignment_id):
+    assignment = Assignment.objects.get(id=assignment_id)
+    course = assignment.course
+    students = Student.objects.filter(course_list__id=course.id)
+    marks={}
+    contents = {}
+    try:
+        for s in students:
+            submission = Submission.objects.filter(assignment = assignment, user = s.user)[0]
+            feedback = Feedback.objects.filter(submission=submission)[0]
+            marks[s.id]=feedback.marks
+            contents[s.id] = str(feedback.content)
+        context = {
+            'course':course,
+            'assignment':assignment,
+            'students':students,
+            'marks':marks,
+            'contents':contents,
+        }
+        return render(request, 'instructor/view_grades.html',context)
+    except:
+        return redirect('view_all_assignments',course.id)
 
 #view to mark_as_done assignments
 @login_required

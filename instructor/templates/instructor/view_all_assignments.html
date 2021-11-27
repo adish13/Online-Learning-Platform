@@ -51,6 +51,7 @@
     {% if assignments %}
         {% for assignment in assignments reversed %}
             <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
+            <h2>{{assignment.name}}</h2>
             {{ assignment.description }}<br>
             Deadline : {{ assignment.deadline }}<br>
     <a href="{% url 'instructor:view_all_submissions' assignment.id %}">
@@ -58,6 +59,9 @@
     </a>
     <a href="{% url 'instructor:add_grades' assignment.id %}">
         <button type="submit" class="btn btn-success">Add Grades</button>
+    </a>
+    <a href="{% url 'instructor:view_grades' assignment.id %}">
+        <button type="submit" class="btn btn-success">View Grades</button>
     </a>
     </a><br><br>
     {% if assignment in progress.assignments.all %}
