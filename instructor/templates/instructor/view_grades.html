@@ -68,8 +68,8 @@
 </div>
 
 <div class="col-sm-2">
-    <a href="{% url 'instructor:download_file' filename='grading_stats.pdf' %}">
-        <button type="submit" class="btn btn-success"style="font-size: larger; margin-left:-60px"> Download Statistics </button>
+    <a href="{% url 'instructor:grading_statistics' assignment.id %}">
+        <button type="submit" class="btn btn-success"style="font-size: larger; margin-left:10px">View Statistics </button>
     </a>
 </div>
 {% endblock %}

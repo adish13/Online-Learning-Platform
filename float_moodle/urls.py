@@ -6,6 +6,7 @@ from django.conf.urls.static import static
 from . import views
 from django.urls import path
 from django.contrib.auth import views as auth_views #import this
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 ## @brief url patterns for the website.
 urlpatterns = [
@@ -19,7 +20,7 @@ urlpatterns = [
     url(r'^divide/', views.divide, name='divide'),
     url(r'^register_user/$', views.register_user, name='register_user'),
     url(r'^register_instructor/$', views.register_instructor, name='register_instructor'),
-    #url(r'^register_TA/$', views.register_TA, name='register_TA'),
+    url(r'^register_TA/$', views.register_TA, name='register_TA'),
     url(r'^logout/$', views.logout_user, name='logout_user'),
     url(r'^course/', include(('course.urls', 'course'), namespace='course')),
     url(r'^instructor/', include(('instructor.urls', 'instructor'), namespace='instructor')),
@@ -29,7 +30,7 @@ urlpatterns = [
     path('',include('TA.urls')),
 
 ]
-
+urlpatterns += staticfiles_urlpatterns()
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

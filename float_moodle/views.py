@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 
 from instructor.views import instructor_detail
-from .forms import UserRegistration, StudentRegistration, InstructorForm,CreateCourse#,TAform
+from .forms import UserRegistration, StudentRegistration, InstructorForm,CreateCourse,TAform
 from course.models import Progress, Student, User
 from django.contrib.auth.forms import PasswordResetForm
 from instructor.models import Instructor, ProgressInstructor
