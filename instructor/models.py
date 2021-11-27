@@ -49,6 +49,10 @@ class Submission(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE, default=1)
     assignment = models.ForeignKey(Assignment,on_delete=models.CASCADE, default=1)
 
+# This class stores an Image
+class ImageObject(models.Model):
+    image = models.FileField(default='')
+
 class Feedback(models.Model):
     content = models.TextField(max_length=500)
     submission = models.ForeignKey(Submission,on_delete=models.CASCADE, default=1)

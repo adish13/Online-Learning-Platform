@@ -3,6 +3,7 @@
 from django.conf.urls import url, include
 from django.contrib import admin
 from . import views
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 ## @brief url patterns for the instructor app.
 urlpatterns = [
@@ -22,6 +23,9 @@ urlpatterns = [
     url(r'^(?P<assignment_id>[0-9]+)/add_grades/$', views.add_grades, name='add_grades'),
     url(r'^(?P<assignment_id>[0-9]+)/view_grades/$', views.view_grades, name='view_grades'),
     url(r'^(?P<course_id>[0-9]+)/(?P<id>[0-9]+)/(?P<done>\d)/mark_as_done/$', views.mark_as_done, name='mark_as_done'),
+    url(r'^(?P<assignment_id>[0-9]+)/grading_statistics/$', views.grading_statistics, name='grading_statistics'),
     
     # url(r'^(?P<assignment_id>[0-9]+)/view_feedback/$', views.view_feedback, name='view_feedback'),
 ]
+
+urlpatterns += staticfiles_urlpatterns()

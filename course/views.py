@@ -306,20 +306,27 @@ def view_grades(request, course_id):
     assignments = Assignment.objects.filter(course=course)
     marks_list = {}
     total_list = {}
+    contents = {}
     total_marks = 0
+    course_total =0
     try:
         for a in assignments:
             submission = Submission.objects.get(user = request.user, assignment =a)
             feedback = Feedback.objects.filter(submission = submission)[0]
-            marks_list[a.id] = int(feedback.marks)
-            total_list[a.id] = int(feedback.marks*int(a.weightage)/100)
+            marks_list[a.id] = float(feedback.marks)
+            total_list[a.id] = float(feedback.marks*float(a.weightage)/100)
             total_marks += total_list[a.id]
+            course_total += marks_list[a.id]
+            contents[a.id] = str(feedback.content)
+
         context = {
             'course' : course,
             'assignments' : assignments,
             'marks_list' : marks_list,
             'total_list': total_list,
-            'total_marks':total_marks
+            'total_marks':total_marks,
+            'course_total':course_total,
+            'contents':contents,
         }
         return render(request,'course/view_grades.html',context)
     except:

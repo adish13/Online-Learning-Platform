@@ -2,7 +2,7 @@
 from django.contrib.auth.decorators import login_required
 
 from TA.models import TeachingAssistant,TA_ship
-from .models import Feedback, Instructor, Submission, Assignment
+from .models import Feedback, ImageObject, Instructor, Submission, Assignment
 from .models import Feedback, Instructor, Submission, Assignment,ProgressInstructor
 from course.models import Course, Membership, Message, Notification, Student
 from django.shortcuts import render, HttpResponse, redirect
@@ -15,7 +15,11 @@ from .functions import send_email,course_invite_text,TA_text,get_student_emails,
 from .functions import course_assignment_text
 from django.utils import timezone
 from django.template.defaulttags import register
-
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib import colors
+from matplotlib.ticker import PercentFormatter
+from django.core.files.base import ContentFile, File
 
 # view for the index page of the instructor.
 # This view is called by /instructor_index url.\n
@@ -343,6 +347,7 @@ def view_grades(request, assignment_id):
             feedback = Feedback.objects.filter(submission=submission)[0]
             marks[s.id]=feedback.marks
             contents[s.id] = str(feedback.content)
+
         context = {
             'course':course,
             'assignment':assignment,
@@ -351,6 +356,78 @@ def view_grades(request, assignment_id):
             'contents':contents,
         }
         return render(request, 'instructor/view_grades.html',context)
+    except:
+        return redirect('view_all_assignments',course.id)
+
+# view for grading statistics
+@login_required
+def grading_statistics(request, assignment_id):
+    assignment = Assignment.objects.get(id=assignment_id)
+    course = assignment.course
+    students = Student.objects.filter(course_list__id=course.id)
+    marks_list =[]
+    try:
+        for s in students:
+            submission = Submission.objects.filter(assignment = assignment, user = s.user)[0]
+            feedback = Feedback.objects.filter(submission=submission)[0]
+            marks_list.append(feedback.marks)
+
+        # calculate stats
+        average = (sum(marks_list) / len(marks_list))
+        variance = sum((i - average) ** 2 for i in marks_list) / len(marks_list)
+        variance = int(variance)
+        average = int(average)
+        # ----------plot the image here and save it-------
+        # Creating histogram
+        fig, axs = plt.subplots(1, 1,
+                        figsize =(10, 7),
+                        tight_layout = True)
+        n_bins = [0,10,20,30,40,50,60,70,80,90,100]
+
+        # Add padding between axes and labels
+        axs.xaxis.set_tick_params(pad = 10)
+        axs.yaxis.set_tick_params(pad = 10)
+ 
+        # Add x, y gridlines
+        axs.grid(b = True, color ='grey',
+                linestyle ='-.', linewidth = 0.5,
+                alpha = 0.6)
+ 
+        # Creating histogram
+        N, bins, patches = axs.hist(marks_list, bins = n_bins)
+ 
+        # Setting color
+        fracs = ((N**(1 / 5)) / N.max())
+        norm = colors.Normalize(fracs.min(), fracs.max())
+ 
+        for thisfrac, thispatch in zip(fracs, patches):
+            color = plt.cm.viridis(norm(thisfrac))
+            thispatch.set_facecolor(color)
+ 
+        # Adding extra features   
+        plt.xlabel("Marks")
+        plt.ylabel("No Of Students")
+        plt.title('Grading Statistics - '+str(assignment.name))
+        plt.xticks = n_bins
+ 
+        # Save plot
+        plt.savefig('media/histogram.png')
+
+        #Make ImageObject Instance
+        i = ImageObject()
+        with open('media/histogram.png','rb') as f:
+            i.image.save('histogram.png', File(f))
+        i.save()
+        #------------plot saved-------------
+        context = {
+            'course':course,
+            'assignment':assignment,
+            'marks_list':marks_list,
+            'average':average,
+            'variance':variance,
+            'i':i,
+        }
+        return render(request, 'instructor/grading_statistics.html',context)
     except:
         return redirect('view_all_assignments',course.id)
 
