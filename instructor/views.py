@@ -350,8 +350,7 @@ def grading_statistics(request, assignment_id):
     course = assignment.course
     students = Student.objects.filter(course_list__id=course.id)
     marks_list =[]
-    #try:
-    if True:
+    try:
         for s in students:
             submission = Submission.objects.filter(assignment = assignment, user = s.user)[0]
             feedback = Feedback.objects.filter(submission=submission)[0]
@@ -413,8 +412,8 @@ def grading_statistics(request, assignment_id):
             'i':i,
         }
         return render(request, 'instructor/grading_statistics.html',context)
-    #except:
-     #   return redirect('view_all_assignments',course.id)
+    except:
+        return redirect('view_all_assignments',course.id)
 
 #view to mark_as_done assignments
 @login_required
