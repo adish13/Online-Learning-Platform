@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-
+import datetime
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -41,7 +41,10 @@ INSTALLED_APPS = [
     'instructor.apps.InstructorConfig',
     'TA.apps.TaConfig',
     'crispy_forms',
-
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
+    'rest_auth.registration',
 ]
 
 MIDDLEWARE = [
@@ -139,3 +142,26 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'shah.adish13@gmail.com'
 EMAIL_HOST_PASSWORD = 'float_moodle'
+
+
+# Configure the JWTs to expire after 1 hour, and allow users to refresh near-expiration tokens
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(hours=1),
+    'JWT_ALLOW_REFRESH': True,
+}
+
+# Make JWT Auth the default authentication mechanism for Django
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
+
+# Enables django-rest-auth to use JWT tokens instead of regular tokens.
+REST_USE_JWT = True
+
+SITE_ID = 1
+# Application definition

@@ -4,6 +4,8 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from . import views
 from django.urls import path
+from rest_framework_jwt.views import refresh_jwt_token
+from . import cli_views
 
 ## @brief url patterns for the course app.
 urlpatterns = [
@@ -25,5 +27,9 @@ urlpatterns = [
     
     path('join_course',views.join_course,name='join_course'),
 
-    path('delete/<message_id>',views.delete_message,name='delete')
+    path('delete/<message_id>',views.delete_message,name='delete'),
+    path('cli/courses/', cli_views.cli_courses, name='cli_courses'),
+    path('cli/pending/', cli_views.cli_pending, name='cli_pending'),
+
+
 ]

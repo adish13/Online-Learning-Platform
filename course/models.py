@@ -37,6 +37,7 @@ class Message(models.Model):
 
 # This class represents the notifications receieved by the students.
 class Notification(models.Model):
+    link = models.CharField(max_length=200,blank=True,null=True)
     content = models.TextField(max_length=500)
     course = models.ForeignKey(Course, default=1, on_delete=models.CASCADE)
     time = models.DateTimeField(blank = True, null= True)

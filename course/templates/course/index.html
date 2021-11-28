@@ -55,7 +55,7 @@
         <div style="background-color:#CDD8CD; border-radius:2%;padding:3px; margin:5px">
         <b>{{ notification.course }}</b><br>
         <div style="font-size:12px;">{{ notification.time }}</div>
-        {{ notification.content }}
+        <a href= "{{ notification.link }}">{{ notification.content }}</a>
         </div>
 
 {% endfor %}
