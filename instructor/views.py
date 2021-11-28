@@ -464,24 +464,31 @@ def all_assignment_stats(request, course_id):
     assignments = Assignment.objects.filter(course = course)
     mean_list=[]
     variance_list=[]
+    x_list = []
     try:
         for a in assignments:
             marks_list=[]
             for s in students:
-                submission = Submission.objects.filter(assignment = a, user = s.user)[0]
-                feedback = Feedback.objects.filter(submission=submission)[0]
-                marks_list.append(feedback.marks)
-
+                try:
+                    submission = Submission.objects.filter(assignment = a, user = s.user)[0]
+                    feedback = Feedback.objects.filter(submission=submission)[0]
+                    marks_list.append(feedback.marks)
+                except:
+                    True
             # calculate stats
-            average = (sum(marks_list) / len(marks_list))
-            variance = sum((i - average) ** 2 for i in marks_list) / len(marks_list)
-            variance = int(variance)
-            average = int(average)
-            mean_list.append(average)
-            variance_list.append(variance)
+            try:
+                average = (sum(marks_list) / len(marks_list))
+                variance = sum((i - average) ** 2 for i in marks_list) / len(marks_list)
+                variance = int(variance)
+                average = int(average)
+                mean_list.append(average)
+                variance_list.append(variance)
+                x_list.append(a.name)
+            except:
+                True
         #plot graph
-        plt.plot(mean_list)
-        plt.plot(variance_list)
+        plt.plot(x_list,mean_list)
+        plt.plot(x_list,variance_list)
          
         plt.xlabel("Assignments")
         plt.ylabel("Mean and Variance")

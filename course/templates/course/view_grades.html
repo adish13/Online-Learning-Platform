@@ -50,10 +50,17 @@
             <tr>
                 <td>{{assignment.name}}</td>
                 <td>{{assignment.weightage}}%</td>
+                {% if marks_list|get_marks:assignment.id %}
                 <td>{{marks_list|get_marks:assignment.id}} </td>
                 <td>0-100</td>
                 <td>{{total_list|get_total:assignment.id}}%</td>
                 <td>{{contents|get:assignment.id}}</td>
+                {% else %}
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                {%endif%}
             </tr>
         {% endfor %}
     
@@ -62,14 +69,21 @@
         <td> </td>
         <td>{{course_total}}</td>
         <td> </td>
-        <td>{{total_marks}}</td><br>
+        <td>{{total_marks}}%</td><br>
         <td></td>
 
-        <h1>Class Average for Course {{course.name}}: {{average}}</h1>
+        </tbody>
+        </table>
+
+
+        <h2>Class Average : {{average}}</h2>
         {% if lagging_behind %}
-        <h2>You are falling behind class average you need to cover up</h2>
+        <h2>Oops! </h2>
+        <h2> You are falling behind class average</h2>
+        <h2> you need to cover up</h2>
         {% else %}
-        <h2>You are doing good</h2>
+        <h4>Congrats!</h4>
+        <h4>You are doing good</h4>
         {%endif%}
     {% else%}
     <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
@@ -77,7 +91,7 @@
     </div>
     {% endif %}
         
-    </tbody>
+    
   </table>
        
     

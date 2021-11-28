@@ -49,9 +49,14 @@
         <br> <br> <br>
         <div class="col-sm-7" style="align:center; overflow-y: scroll; height:650px;border: 3px solid #66cdaa;background-color:#e3f0e8;color:black;font-family: 'Abhaya Libre';font-size:16px; margin-left: 70px; width: 900px;">
         <h3 align="center"; style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892">Assignments</h3>
+
+        <a href="{% url 'instructor:all_assignment_stats' course.id %}">
+            <button type="submit" class="btn btn-success">View All Statistics</button>
+        </a>
     {% if assignments %}
         {% for assignment in assignments reversed %}
             <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
+                <h2 style="padding-bottom: 0px; display: inline-block; padding-left: 20px;"> {{ assignment.name }} </h2><br>
             <h2 style="padding-bottom: 0px; display: inline-block; padding-left: 20px;"> {{ assignment.description }} </h2>
             <div style="float: right; padding-top: 20px;">
             {% if assignment in progress.assignments.all %}

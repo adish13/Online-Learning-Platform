@@ -312,22 +312,31 @@ def view_grades(request, course_id):
     students = Student.objects.filter(course_list__id = course_id)
     try:
         for a in assignments:
-            submission = Submission.objects.get(user = request.user, assignment =a)
-            feedback = Feedback.objects.filter(submission = submission)[0]
-            marks_list[a.id] = float(feedback.marks)
-            total_list[a.id] = float(feedback.marks*float(a.weightage)/100)
-            total_marks += total_list[a.id]
-            course_total += marks_list[a.id]
-            contents[a.id] = str(feedback.content)
-
-        total_marks_list=[]
-        for s in students:
-            ag=0
-            for a in assignments:
+            try:
                 submission = Submission.objects.get(user = request.user, assignment =a)
                 feedback = Feedback.objects.filter(submission = submission)[0]
-                ag+=float(feedback.marks*(a.weightage)/100)
-            total_marks_list.append(ag)
+                marks_list[a.id] = float(feedback.marks)
+                total_list[a.id] = float(feedback.marks*float(a.weightage)/100)
+                total_marks += total_list[a.id]
+                course_total += marks_list[a.id]
+                contents[a.id] = str(feedback.content)
+            except:
+                True
+
+        total_marks_list=[]
+        try:
+            for s in students:
+                ag=0
+                for a in assignments:
+                    try:
+                        submission = Submission.objects.get(user = request.user, assignment =a)
+                        feedback = Feedback.objects.filter(submission = submission)[0]
+                        ag+=float(feedback.marks*(a.weightage)/100)
+                    except:
+                        True
+                total_marks_list.append(ag)
+        except:
+            True
         average = sum(total_marks_list)/len(total_marks_list)
         lagging_behind = False
         if total_marks<average:
