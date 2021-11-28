@@ -37,3 +37,29 @@ while True:
                 print("  "+pending_resources_list[i])
         except Exception as e:
             print("Error- ", e)
+
+    elif (cmd == 'download_assignments'):
+        try:
+            response = requests.post('http://127.0.0.1:8000/cli/download_assignments/', data = {'username':username,'roll_num':roll_num, 'password':password})
+            course_list = response.json()['courses']
+            pending_assignments_list = response.json()['pending_assignments_list']
+            for i in range(len(course_list)):
+                print(str(i+1)+ " Course Name :" + course_list[i])
+                print(" Download Assignments :")
+                print("  " + pending_assignments_list[i])
+        except Exception as e:
+            print("Error- ", e)
+
+    elif (cmd== 'download_resources'):
+        try:
+            response = requests.post('http://127.0.0.1:8000/cli/download_resources/', data = {'username':username,'roll_num':roll_num, 'password':password})
+            course_list = response.json()['courses']
+            pending_assignments_list = response.json()['pending_assignments_list']
+            pending_resources_list = response.json()['pending_resources_list']
+            for i in range(len(course_list)):
+                print(str(i+1)+ " Course Name :" + course_list[i])
+                print(" Download Resources :")
+                print("  "+pending_resources_list[i])
+        except Exception as e:
+            print("Error- ", e)
+
