@@ -30,6 +30,7 @@ urlpatterns = [
     path('delete/<message_id>',views.delete_message,name='delete'),
     path('cli/courses/', cli_views.cli_courses, name='cli_courses'),
     path('cli/pending/', cli_views.cli_pending, name='cli_pending'),
+    path('cli/student_list/', cli_views.cli_student_list, name='cli_student_list'),
 
 
 ]
