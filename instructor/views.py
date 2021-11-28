@@ -462,10 +462,12 @@ def all_assignment_stats(request, course_id):
     course = Course.objects.get(id = course_id)
     students = Student.objects.filter(course_list__id=course.id)
     assignments = Assignment.objects.filter(course = course)
+    x_list = []
     mean_list=[]
     variance_list=[]
     try:
         for a in assignments:
+            x_list.append(a.name)
             marks_list=[]
             for s in students:
                 submission = Submission.objects.filter(assignment = a, user = s.user)[0]
@@ -480,8 +482,8 @@ def all_assignment_stats(request, course_id):
             mean_list.append(average)
             variance_list.append(variance)
         #plot graph
-        plt.plot(mean_list)
-        plt.plot(variance_list)
+        plt.plot(x_list,mean_list)
+        plt.plot(x_list,variance_list)
          
         plt.xlabel("Assignments")
         plt.ylabel("Mean and Variance")

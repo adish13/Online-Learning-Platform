@@ -14,7 +14,23 @@ class NotificationForm(forms.ModelForm):
 
 # This class represents the form to add an assignment.
 class AssignmentForm(forms.ModelForm):
-
+    def __init__(self, *args, **kwargs):
+        super(AssignmentForm, self).__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs.update(
+            {
+                'placeholder': 'Enter Assignment Name',
+            }
+        )
+        self.fields['description'].widget.attrs.update(
+            {
+                'placeholder': 'Enter Description',
+            }
+        )
+        self.fields['deadline'].widget.attrs.update(
+            {
+                'placeholder': 'YYYY-MM-DD HH:MM',
+            }
+        )
     class Meta:
         model = Assignment
         fields = ['name', 'description', 'file', 'weightage', 'deadline']
