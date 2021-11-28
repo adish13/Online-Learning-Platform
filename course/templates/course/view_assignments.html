@@ -32,7 +32,7 @@
         {% for assignment in assignments reversed %}
     <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
         <h2 style="padding-left: 20px; padding-bottom: 5px; display: inline-block;"> {{assignment.name}} </h2>
-        <div style="float: right; padding-top: 10px;">
+        <div style="float: right; padding-top: 13px;">
             {% if assignment in progress.assignments.all %}
         <a href="{% url 'course:mark_as_done' course.id 0 assignment.id 1 %}">
             <button type="submit" class="btn btn-success">Done</button></a>
@@ -80,15 +80,24 @@
         </a>
         {% else %}
         <br>
-        <a href="{{ assignment.file.url }}" style="padding-left: 75px;">
-            <button type="submit" class="btn btn-info"> Download Assignment</button>
-        </a>
-        <a href="{% url 'course:upload_submission' assignment.id %}" style="padding-left: 75px;">
-            <button type="submit" class="btn btn-info">Upload Submission</button>
-        </a>
-        <a href="{% url 'course:view_submissions' assignment.id %}" style="padding-left: 75px;">
-            <button type="submit" class="btn btn-info">View my submissions</button>
-        </a>
+        <div class="row">
+            <div class="col-sm-1" style="margin-left: 10px;"></div>
+            <div class="col-sm-2">
+                <a href="{{ assignment.file.url }}">
+                    <button type="submit" class="btn btn-info btn-lg"> Download Assignment</button>
+                </a>
+            </div>
+            <div class="col-sm-1" style="margin-left: 25px;"></div>
+            <div class="col-sm-3">
+                <a href="{% url 'course:upload_submission' assignment.id %}">
+                    <button type="submit" class="btn btn-info btn-lg">Upload Submission</button>
+                </a>
+            </div>
+            <div class="col-sm-3">
+                <a href="{% url 'course:view_submissions' assignment.id %}">
+                    <button type="submit" class="btn btn-info btn-lg">View my submissions</button>
+                </a>
+            </div>
         {% endif %}
         <br><br>      
 </div>
