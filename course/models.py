@@ -11,7 +11,7 @@ class Student(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE, default=1)
     name = models.CharField(max_length=100)
     roll_no = models.CharField(max_length=100)
-    course_list = models.ManyToManyField(Course,through='Membership')
+    course_list = models.ManyToManyField(Course,through='Membership',blank=True)
 
     def __str__(self):
         return self.name
