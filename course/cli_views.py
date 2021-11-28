@@ -3,11 +3,13 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
-from course.models import Student
+from course.models import Resources, Student
 from django.contrib.auth import login, models, update_session_auth_hash
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from course.models import Progress
+from instructor.models import Assignment
+from course.models import Resources
 
 def rest_login(request):
     data = {}
@@ -67,16 +69,25 @@ def cli_pending(request):
         # try:
             x = request.data.get("roll_num")
             student = Student.objects.filter(roll_no=x).first()
-            print(student.roll_no)
-            print(student)
-            # print(student.user.username)
             course_names = []
-            instructor_names = []
-            progress_list = []
+            pending_assignments_list = []
+            pending_resources_list=[]
             for i in student.course_list.all():
+                assignments_list = ''
+                resources_list =''
+                course_names.append(i.name)
+                assignments = Assignment.objects.filter(course = i)
+                resources = Resources.objects.filter(course=i)
                 progress = Progress.objects.get(course = i, student = student)
-                print(progress.assignments)
-            response = {'courses' : course_names,'instructors':instructor_names}
+                for a in assignments:
+                    if not a in progress.assignments.all():
+                        assignments_list += (str(a.name)+" Due At: " + str(a.deadline)[:-9] + "\n  ")
+                pending_assignments_list.append(assignments_list)
+                for r in resources:
+                    if not r in progress.resources.all():
+                        resources_list+=(str(r.title)+"\n  ")
+                pending_resources_list.append(resources_list)
+            response = {'courses' : course_names,'pending_assignments_list':pending_assignments_list,'pending_resources_list':pending_resources_list}
             print(response)
             return Response(response)
         # except:
