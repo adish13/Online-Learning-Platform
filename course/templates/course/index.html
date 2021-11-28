@@ -11,7 +11,8 @@
     <div class="row col-sm-9" >
         <div class="col-sm-12"style="font-family: 'Alfa Slab One';font-size:24px;">
             <h3 align="center" style="font-family:Volkhov,cursive;font-size:40px;color: #728892">YOUR COURSES</h3>
-        </div >
+        </div>
+        <center style="margin-bottom: 20px;"> Join new courses over <a href="{% url 'join_course' %}" style="color: blue;"> here </a> </center>
         {% if courses %}
             {% for course in courses %}
                 <div  class="col-sm-6 col-lg-4" >
@@ -62,7 +63,7 @@
     </div>
 
 </div>
-<center> <h1> Join new courses over <a href="{% url 'join_course' %}" style="color: blue;"> here </a> </h1> </center>
-<br><br><br><br>
+<br>
+
 
 {% endblock %}

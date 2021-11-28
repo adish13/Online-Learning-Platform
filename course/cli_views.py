@@ -1,14 +1,19 @@
+from django.http import response
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
+import course
 from course.models import Resources, Student
 from django.contrib.auth import login, models, update_session_auth_hash
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from course.models import Progress
 from instructor.models import Assignment, Course, Instructor
+from instructor.models import Assignment, Instructor
+from course.models import Resources
+from django.shortcuts import redirect
 
 def rest_login(request):
     data = {}
@@ -81,40 +86,80 @@ def cli_pending(request):
                 progress = Progress.objects.get(course = i, student = student)
                 for a in assignments:
                     if not a in progress.assignments.all():
-                        assignments_list += (str(a.name)+" Due At: " + str(a.deadline)[:-9])
+                        assignments_list += (str(a.name)+" Due At: " + str(a.deadline)[:-9] + "\n  ")
                 pending_assignments_list.append(assignments_list)
                 for r in resources:
                     if not r in progress.resources.all():
-                        resources_list+=(str(r.title))
+                        resources_list+=(str(r.title)+"\n  ")
                 pending_resources_list.append(resources_list)
             response = {'courses' : course_names,'pending_assignments_list':pending_assignments_list,'pending_resources_list':pending_resources_list}
-            print(response)
-            return Response(response)
-
-@api_view(["POST"])
-@permission_classes([AllowAny]) 
-def cli_student_list(request):
-    if rest_login(request):
-        # try:
-            print('here')
-            x = request.data.get("name")
-            # print(x)
-            instructor = Instructor.objects.get(name=x)
-            print(instructor.name)
-            courses = Course.objects.filter(instructor=instructor)
-            print(courses)
-            course_list = []
-            student_list = []
-            for i in courses:
-                students = Student.objects.filter(course_list__id= i.id)
-
-                student_list.append(students)
-            response = {'courses' : course_list,'student_list':student_list}
-            print(response)
             return Response(response)
         # except:
         #     print("failed")
         #     response = {'courses':[]}
         #     return Response(response)
+    else:
+        raise ValidationError({"400": f'Some Problem'})
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny]) 
+def cli_download_assignments(request):
+    if rest_login(request):
+            x = request.data.get("roll_num")
+            student = Student.objects.filter(roll_no=x).first()
+            course_names = []
+            pending_assignments_list = []
+            for i in student.course_list.all():
+                assignments_list = ''
+                course_names.append(i.name)
+                assignments = Assignment.objects.filter(course = i)
+                for a in assignments:
+                    assignments_list += (str(a.name)+ " URL: http://127.0.0.1:8000"+str(a.file.url) + "\n  ")
+                pending_assignments_list.append(assignments_list)
+            response={'courses' : course_names,'pending_assignments_list':pending_assignments_list}
+            return Response(response)
+    else:
+        raise ValidationError({"400": f'Some Problem'})
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny]) 
+def cli_download_resources(request):
+    if rest_login(request):
+            x = request.data.get("roll_num")
+            student = Student.objects.filter(roll_no=x).first()
+            course_names = []
+            pending_resources_list = []
+            for i in student.course_list.all():
+                resources_list = ''
+                course_names.append(i.name)
+                resources = Resources.objects.filter(course = i)
+                for a in resources:
+                    resources_list += (str(a.name)+ " URL: http://127.0.0.1:8000"+str(a.file_resource.url) + "\n  ")
+                pending_resources_list.append(resources_list)
+            response={'courses' : course_names,'pending_resources_list':pending_resources_list}
+            return Response(response)
+    else:
+        raise ValidationError({"400": f'Some Problem'})
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny]) 
+def cli_progress_instructor(request):
+    if rest_login(request):
+            x = request.data.get("username")
+            teacher = Instructor.objects.filter(roll_no=x).first()
+            course_names = []
+            pending_resources_list = []
+            for i in student.course_list.all():
+                resources_list = ''
+                course_names.append(i.name)
+                resources = Resources.objects.filter(course = i)
+                for a in resources:
+                    resources_list += (str(a.name)+ " URL: http://127.0.0.1:8000"+str(a.file_resource.url) + "\n  ")
+                pending_resources_list.append(resources_list)
+            response={'courses' : course_names,'pending_resources_list':pending_resources_list}
+            return Response(response)
     else:
         raise ValidationError({"400": f'Some Problem'})

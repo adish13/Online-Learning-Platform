@@ -1,16 +1,11 @@
 {% extends 'course/basic_page.html' %}
 {% block course_active %}active{% endblock %}
-
-
 {% block body %}
 <br>
 <div class="container-fluid songs-container" >
-
     <div class="row">
-
-    <div class="col-sm-6 col-md-3">
+        <div class="col-sm-6 col-md-3">
             <div class="panel panel-default">
-
                 <div class="panel-body" style="background-color: #e3f0e8;border: 0px solid #66cdaa;">
                     <a href="{% url 'course:detail' course.id %}">
                         {% if course.course_logo %}
@@ -24,26 +19,26 @@
                 </div>
             </div>
         </div>
-
-
-
-
-       <div class="col-sm-7" style="align:center; overflow-y: scroll; height:650px;border: 3px solid #66cdaa;background-color:#e3f0e8;color:black;font-family: 'Abhaya Libre';font-size:16px;">
-        <h3 align="center"; style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892">Submissions for Assignment {{name}}</h3>
-    {% if submissions%}    
-    {% for submission in submissions reversed %}
-<div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
-    <a href="{{ submission.file_submitted.url }}" style="color: #209dd4">{{ submission.user }}</a><br>
-    <a href="{% url 'course:view_feedback' submission.id %}">
-        <button type="submit" class="btn btn-success">View Feedback</button>
-    </a>    Submitted at {{ submission.time_submitted }}<br>
-</div>
-    {% endfor %}
+        <div class="col-sm-7" style="align:center; overflow-y: scroll; height:650px;border: 3px solid #66cdaa;background-color:#e3f0e8;color:black;font-family: 'Abhaya Libre';font-size:16px;">
+            <h3 align="center"; style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892">Submissions for Assignment</h3>
+            <h3 align="center"; style="text-align:center;font-family:Volkhov,cursive;font-size:40px;color: #728892"> {{name}} </h3>
+            {% if submissions%}    
+                {% for submission in submissions reversed %}
+                    <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
+                        <h3> <a href="{{ submission.file_submitted.url }}" style="color: #209dd4"> Download your submission </a> </h3>
+                        <h4> Submitted at {{ submission.time_submitted }} </h4>
+                        <a href="{% url 'course:view_feedback' submission.id %}">
+                            <button type="submit" class="btn btn-info btn-lg">View Feedback</button>
+                        </a> 
+                        <br>
+                    </div>
+                {% endfor %}
         </div>
-    {% else %}
-    <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
-        You have not made any submissions
-    </div>    
-    {% endif %}
+        {% else %}
+        <div style="background-color:#CDD8CD; border-radius:2%;padding:10px; margin:5px">
+            You have not made any submissions
+        </div>    
+        {% endif %}
+    </div>
 </div>
 {% endblock %}
