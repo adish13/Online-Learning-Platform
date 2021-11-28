@@ -329,7 +329,7 @@ def view_grades(request, course_id):
                 ag=0
                 for a in assignments:
                     try:
-                        submission = Submission.objects.get(user = request.user, assignment =a)
+                        submission = Submission.objects.get(user = s.user, assignment =a)
                         feedback = Feedback.objects.filter(submission = submission)[0]
                         ag+=float(feedback.marks*(a.weightage)/100)
                     except:
