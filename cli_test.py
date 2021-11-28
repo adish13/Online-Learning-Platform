@@ -1,10 +1,11 @@
-from getpass import getpass
-from colorama import init
+from prompt_toolkit import prompt
+from prompt_toolkit.history import FileHistory
+from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 import requests
+from getpass import getpass
+from prompt_toolkit.completion import WordCompleter
 
-import course
 
-init()
 isInstructor = input("Type 'yes' if you are an instructor : ")
 if isInstructor=="yes":
     username = input("Enter username : ")
@@ -15,9 +16,14 @@ else:
     roll_num = input("Enter Roll Number : ")
     password = getpass()
 
-while True:
-    # command to view courses
-    cmd = input('Float_Moodle $ ')
+Completer = WordCompleter(['courses', 'pending', 'download_assignments', 'download_resources', 'courses_instructor', 'list_tas','students'],
+                             ignore_case=True)
+while 1:
+    cmd = prompt('float_moodle ~ ',
+                        history=FileHistory('history.txt'),
+                        auto_suggest=AutoSuggestFromHistory(),
+                        completer=Completer,
+    )
     if (cmd =='courses'):
         response = requests.post('http://127.0.0.1:8000/cli/courses/', data = {'username':username, 'roll_num':roll_num, 'password':password})
         try:
@@ -100,4 +106,3 @@ while True:
                 print("  "+students_list[i])
         except Exception as e:
             print("Error- ", e)
-

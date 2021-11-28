@@ -19,3 +19,4 @@ django-allauth==0.46.0
 django-rest-auth==0.9.5
 djangorestframework==3.12.4
 djangorestframework-jwt==1.11.0
+prompt_toolkit

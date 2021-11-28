@@ -14,6 +14,7 @@ from instructor.models import Assignment, Course, Instructor
 from instructor.models import Assignment, Instructor
 from course.models import Resources
 from django.shortcuts import redirect
+from TA.models import TeachingAssistant
 
 def rest_login(request):
     data = {}
@@ -143,23 +144,54 @@ def cli_download_resources(request):
     else:
         raise ValidationError({"400": f'Some Problem'})
 
+@api_view(["POST"])
+@permission_classes([AllowAny]) 
+def cli_courses_instructor(request):
+    if rest_login(request):
+            x = request.data.get("name")
+            teacher = Instructor.objects.filter(name=x).first()
+            print(teacher.name)
+            course_names = []
+            courses = Course.objects.filter(instructor=teacher)
+            for i in courses:
+                course_names.append(i.name)
+            response={'courses' : course_names}
+            return Response(response)
+    else:
+        raise ValidationError({"400": f'Some Problem'})
 
 @api_view(["POST"])
 @permission_classes([AllowAny]) 
-def cli_progress_instructor(request):
+def cli_list_tas(request):
     if rest_login(request):
-            x = request.data.get("username")
-            teacher = Instructor.objects.filter(roll_no=x).first()
+        print(TeachingAssistant.objects.all())
+        ta_names = []
+        for i in TeachingAssistant.objects.all().iterator():
+            print(i.name)
+            ta_names.append(i.name)
+        response={'tas' : ta_names}
+        return Response(response)
+    else:
+        raise ValidationError({"400": f'Some Problem'})
+
+@api_view(["POST"])
+@permission_classes([AllowAny]) 
+def cli_students(request):
+    if rest_login(request):
+            x = request.data.get("name")
+            teacher = Instructor.objects.filter(name=x).first()
+            print(teacher.name)
             course_names = []
-            pending_resources_list = []
-            for i in student.course_list.all():
-                resources_list = ''
+            students_list = []
+            courses = Course.objects.filter(instructor=teacher)
+            for i in courses:
                 course_names.append(i.name)
-                resources = Resources.objects.filter(course = i)
-                for a in resources:
-                    resources_list += (str(a.name)+ " URL: http://127.0.0.1:8000"+str(a.file_resource.url) + "\n  ")
-                pending_resources_list.append(resources_list)
-            response={'courses' : course_names,'pending_resources_list':pending_resources_list}
+                students = Student.objects.filter(course_list__id = i.id)
+                st=""
+                for s in students:
+                    st += str(s.name) + "\n  "
+                students_list.append(st)
+            response={'courses' : course_names, 'students_list':students_list}
             return Response(response)
     else:
         raise ValidationError({"400": f'Some Problem'})

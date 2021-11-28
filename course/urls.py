@@ -30,10 +30,11 @@ urlpatterns = [
     path('delete/<message_id>',views.delete_message,name='delete'),
     path('cli/courses/', cli_views.cli_courses, name='cli_courses'),
     path('cli/pending/', cli_views.cli_pending, name='cli_pending'),
-    path('cli/student_list/', cli_views.cli_student_list, name='cli_student_list'),
+    path('cli/courses_instructor/', cli_views.cli_courses_instructor, name='cli_courses_instructor'),
 
     path('cli/download_assignments/', cli_views.cli_download_assignments, name='cli_download_assignments'),
     path('cli/download_resources/', cli_views.cli_download_resources, name='cli_download_resources'),
-    path('cli/progress_instructor', cli_views.cli_progress_instructor, name='cli_progress_instructor')
+    path('cli/list_tas/',cli_views.cli_list_tas,name='cli_list_tas'),
+    path('cli/students/',cli_views.cli_students,name='cli_students')
 
 ]

@@ -462,13 +462,11 @@ def all_assignment_stats(request, course_id):
     course = Course.objects.get(id = course_id)
     students = Student.objects.filter(course_list__id=course.id)
     assignments = Assignment.objects.filter(course = course)
-    x_list = []
     mean_list=[]
     variance_list=[]
     x_list = []
     try:
         for a in assignments:
-            x_list.append(a.name)
             marks_list=[]
             for s in students:
                 try:
