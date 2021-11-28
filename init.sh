@@ -1,3 +1,5 @@
+python -m venv project-venv
+pip install -r requirements.txt
 python3 manage.py makemigrations course
 python3 manage.py makemigrations instructor
 python3 manage.py makemigrations TA

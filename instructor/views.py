@@ -21,7 +21,7 @@ from matplotlib import colors
 from matplotlib.ticker import PercentFormatter
 from django.core.files.base import ContentFile, File
 from io import StringIO, BytesIO
-
+from math import sqrt
 # view for the index page of the instructor.
 # This view is called by /instructor_index url.\n
 # It returns the instructor's homepage containing links to all the courses he teaches.
@@ -303,10 +303,10 @@ def add_grades(request, assignment_id):
 
             file_data = csv_file.read().decode('utf-8')
             lines = file_data.split('\n')
-
-            # loop over the lines and save them in db. If error, store as string and then display
-            for line in lines[:-1]:
+                # loop over the lines and save them in db. If error, store as string and then display
+            for line in lines:
                 fields = line.split(',')
+                print(fields)
                 student = Student.objects.get(name = str(fields[0]))
                 submission = Submission.objects.get(user=student.user, assignment=assignment)
                 marks = fields[1]
@@ -319,7 +319,7 @@ def add_grades(request, assignment_id):
                 feedback.save()
             
             notification = Notification()
-            notification.link = "http://127.0.0.1:8000/course/"+course.id+"/view_feedback/"
+            notification.link = "http://127.0.0.1:8000/course/"+str(course.id)+"/view_feedback/"
             notification.content = "Feedback added - " + str(assignment.name)
             notification.course = course
             notification.time = timezone.now()
@@ -328,6 +328,7 @@ def add_grades(request, assignment_id):
             return redirect('view_all_assignments', course.id)
 
     except Exception as e:
+        print(e)
         return redirect('add_grades', assignment_id)
 
 @register.filter
@@ -375,8 +376,8 @@ def grading_statistics(request, assignment_id):
 
         # calculate stats
         average = (sum(marks_list) / len(marks_list))
-        variance = sum((i - average) ** 2 for i in marks_list) / len(marks_list)
-        variance = int(variance)
+        sd = sqrt(sum((i - average) ** 2 for i in marks_list) / len(marks_list))
+        sd = int(sd)
         average = int(average)
         # ----------plot the image here and save it-------
         # Creating histogram
@@ -432,7 +433,7 @@ def grading_statistics(request, assignment_id):
             'assignment':assignment,
             'marks_list':marks_list,
             'average':average,
-            'variance':variance,
+            'sd':sd,
             'i':i,
             'data': data,
         }
@@ -463,7 +464,7 @@ def all_assignment_stats(request, course_id):
     students = Student.objects.filter(course_list__id=course.id)
     assignments = Assignment.objects.filter(course = course)
     mean_list=[]
-    variance_list=[]
+    sd_list=[]
     x_list = []
     try:
         for a in assignments:
@@ -478,22 +479,22 @@ def all_assignment_stats(request, course_id):
             # calculate stats
             try:
                 average = (sum(marks_list) / len(marks_list))
-                variance = sum((i - average) ** 2 for i in marks_list) / len(marks_list)
-                variance = int(variance)
+                sd = sqrt(sum((i - average) ** 2 for i in marks_list) / len(marks_list))
+                sd = int(sd)
                 average = int(average)
                 mean_list.append(average)
-                variance_list.append(variance)
+                sd_list.append(sd)
                 x_list.append(a.name)
             except:
                 True
         #plot graph
         plt.plot(x_list,mean_list)
-        plt.plot(x_list,variance_list)
+        plt.plot(x_list,sd_list)
          
         plt.xlabel("Assignments")
-        plt.ylabel("Mean and Variance")
+        plt.ylabel("Mean and Standard deviation")
         plt.title('Course Statistics - '+str(course.name))
-        plt.plot([], c='#D7191C', label='Variances')
+        plt.plot([], c='#D7191C', label='SDs')
         plt.plot([], c='#2C7BB6', label='Means')
         plt.legend()
  
