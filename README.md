@@ -49,3 +49,7 @@ Our website has the following features :
 25. sending email for updates
 26. graphs are also clickable and can be downloaded
 27. cli features
+
+
+# Link of deployed website:
+https://bruteforces-moodle.herokuapp.com/login/?next=/
