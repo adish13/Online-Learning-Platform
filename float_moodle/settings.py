@@ -140,8 +140,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'shah.adish13@gmail.com'
-EMAIL_HOST_PASSWORD = 'float_moodle'
+EMAIL_HOST_USER = '#insert_email_here@gmail.com'
+EMAIL_HOST_PASSWORD = '#insert_password_here'
 
 
 # Configure the JWTs to expire after 1 hour, and allow users to refresh near-expiration tokens
